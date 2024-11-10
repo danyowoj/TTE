@@ -76,6 +76,8 @@ private slots:
 
     void on_Palette_triggered();
 
+    void on_FontAndSize_triggered();
+
 private:
     Ui::MainWindow *ui;
     int pageIndex;
