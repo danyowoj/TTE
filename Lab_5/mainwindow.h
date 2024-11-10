@@ -60,6 +60,8 @@ private slots:
 
     void on_DeleteColumn_triggered();
 
+    void setupShortcuts();
+
 private:
     Ui::MainWindow *ui;
     int pageIndex;
