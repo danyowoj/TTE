@@ -78,6 +78,10 @@ private slots:
 
     void on_FontAndSize_triggered();
 
+    void loadTextSettings(const QString& filePath);
+    
+    void saveTextSettings(const QString& filePath);
+
 private:
     Ui::MainWindow *ui;
     int pageIndex;
