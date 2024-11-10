@@ -43,28 +43,16 @@ public:
 
 private slots:
     void on_CreateNewFile_triggered();
+
     void on_OpenFile_triggered();
+
     void on_SaveFile_triggered();
+
     void on_SaveFileAs_triggered();
+
     void on_Search_triggered();
+
     void on_Replace_triggered();
-    void on_Table_triggered();
-
-    void onTableCellChanged(int row, int column);
-
-    void on_AddRow_triggered();
-
-    void on_AddColumn_triggered();
-
-    void on_DeleteRow_triggered();
-
-    void on_DeleteColumn_triggered();
-
-    void setupShortcuts();
-
-    void on_Clear_triggered();
-
-    void on_Undo_triggered();
 
     void on_Copy_triggered();
 
@@ -78,13 +66,33 @@ private slots:
 
     void on_FontAndSize_triggered();
 
+    void on_Table_triggered();
+
+    void setupShortcuts();
+
+    void on_Clear_triggered();
+
     void loadTextSettings(const QString& filePath);
-    
+
     void saveTextSettings(const QString& filePath);
 
     void closeEvent(QCloseEvent *event);
-    
+
     void closeTab(int index);
+
+    void onTableCellChanged(int row, int column);
+
+    void on_AddRow_triggered();
+
+    void on_Undo_triggered();
+
+    void on_AddColumn_triggered();
+
+    void on_DeleteRow_triggered();
+
+    void on_DeleteColumn_triggered();
+
+    void on_Paddins_triggered();
 
 private:
     Ui::MainWindow *ui;
