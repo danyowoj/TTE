@@ -82,6 +82,10 @@ private slots:
     
     void saveTextSettings(const QString& filePath);
 
+    void closeEvent(QCloseEvent *event);
+    
+    void closeTab(int index);
+
 private:
     Ui::MainWindow *ui;
     int pageIndex;
