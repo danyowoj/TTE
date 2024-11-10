@@ -749,3 +749,77 @@ void MainWindow::on_Redo_triggered()
         editor->document()->redo();
     }
 }
+
+void MainWindow::on_Palette_triggered()
+{
+    // Получаем текущий редактор
+    editor = qobject_cast<QTextEdit*>(ui->tabWidget->currentWidget());
+    if (!editor) return;  // Если нет активного редактора, выходим
+    QTextCursor cursor = editor->textCursor();
+    // Получаем текущий цвет текста и фона
+    auto currentForegroundColor = cursor.charFormat().foreground().color();
+    auto currentBackgroundColor = cursor.charFormat().background().color();
+    qDebug() << "currentBackgroundColor: " << currentBackgroundColor;
+    // Открываем диалог выбора цвета текста
+    QColor newTextColor = QColorDialog::getColor(currentForegroundColor, this, tr("Выберите цвет текста"));
+    // Открываем диалог выбора цвета фона
+    QColor newBackgroundColor = QColorDialog::getColor(currentBackgroundColor, this, tr("Выберите цвет фона"));
+    // Если текстовый цвет не выбран, оставляем текущий или устанавливаем чёрный по умолчанию
+    if (!newTextColor.isValid()) {
+        newTextColor = currentForegroundColor.isValid() ? currentForegroundColor : QColor(Qt::black);
+    }
+    // Если цвет фона не выбран или прозрачный, устанавливаем белый по умолчанию
+    if (!newBackgroundColor.isValid() || newBackgroundColor.alpha() == 0) {
+        newBackgroundColor = QColor(Qt::white);  // Устанавливаем белый фон
+    }
+    // Проверка на совпадение цвета текста и фона
+    if (newTextColor == newBackgroundColor) {
+        // Если цвет фона светлый, текст должен быть чёрным, если тёмный — белым
+        newTextColor = (newBackgroundColor.lightness() > 128) ? QColor(Qt::black) : QColor(Qt::white);
+    }
+    // Сохранение новых цветов
+    textColor = newTextColor;
+    backgroundColor = newBackgroundColor;
+    // Устанавливаем цвета для выделенного текста или всего редактора
+    QTextCharFormat format;
+    format.setForeground(textColor);  // Устанавливаем цвет текста
+    format.setBackground(backgroundColor);  // Устанавливаем цвет фона
+    // Если есть выделение текста, применяем формат только к выделенному тексту
+    if (cursor.hasSelection()) {
+        cursor.mergeCharFormat(format);
+    } else {
+        // Если текста не выделено, применяем формат ко всей строке
+        editor->setCurrentCharFormat(format);
+        qDebug()<<"editor->backgroundRole() "<<editor->backgroundRole();
+    }
+}
+
+void MainWindow::on_FontAndSize_triggered() {
+    // Проверяем текущий редактор
+    editor = qobject_cast<QTextEdit*>(ui->tabWidget->currentWidget());
+    if (!editor) return;  // Если нет активного редактора, прерываем выполнение
+    bool ok;
+    // Открываем диалог выбора шрифта
+    QFont font = QFontDialog::getFont(&ok, editor->currentFont(), this, tr("Выберите шрифт"));
+    qDebug() << "Selected Font: " << font;
+    if (ok) {
+        // Сохраняем выбранный шрифт в переменной класса для дальнейшего использования
+        currentFont = font;
+        // Получаем текстовый курсор
+        QTextCursor cursor = editor->textCursor();
+        // Создаем формат для шрифта
+        QTextCharFormat format;
+        format.setFont(font);
+        if (cursor.hasSelection()) {
+            // Если текст выделен, применяем шрифт к выделенному тексту
+            qDebug() << "Applying Font to Selected Text: " << format.font();
+            cursor.mergeCharFormat(format);
+        } else {
+            // Если текст не выделен, применяем шрифт для текущей строки
+            qDebug() << "Applying Font to Future Text: " << format.font();
+            editor->setCurrentCharFormat(format);
+        }
+        // Сохраняем изменения в документе редактора
+        editor->document()->setModified(true);
+    }
+}
