@@ -72,7 +72,9 @@ private slots:
 
     void on_Cut_triggered();
 
-    void on_Redo_triggered()
+    void on_Redo_triggered();
+
+    void on_Palette_triggered();
 
 private:
     Ui::MainWindow *ui;
