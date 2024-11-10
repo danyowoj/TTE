@@ -66,6 +66,14 @@ private slots:
 
     void on_Undo_triggered();
 
+    void on_Copy_triggered();
+
+    void on_Paste_triggered();
+
+    void on_Cut_triggered();
+
+    void on_Redo_triggered()
+
 private:
     Ui::MainWindow *ui;
     int pageIndex;
