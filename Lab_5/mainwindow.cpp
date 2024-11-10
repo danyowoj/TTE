@@ -686,3 +686,38 @@ void MainWindow::setupShortcuts(){
     ui->Undo->setShortcut(QKeySequence::Undo);
     ui->Redo->setShortcut(QKeySequence::Redo);
 }
+
+void MainWindow::on_Clear_triggered()
+{
+    pageIndex = ui->tabWidget->currentIndex();
+    QWidget *widget = ui->tabWidget->widget(pageIndex);
+    editor = qobject_cast<QTextEdit*>(widget);
+    if (!this->tempFile.isOpen() && !this->tempFile.open()) {
+               return; // Открываем временный файл
+       }
+    if(editor){
+//       editor->clear();
+        this->tempFile.write(editor->document()->toPlainText().toUtf8());
+        this->tempFile.flush();
+        this->tempFile.close();
+        editor->document()->clear();
+    }
+    editor->document()->setModified(true);
+}
+
+void MainWindow::on_Undo_triggered()
+{
+    if(editor){
+        if (this->tempFile.exists()) {
+            if(this->tempFile.open()){
+            editor->undo();
+            QString saved = QString::fromUtf8(this->tempFile.readAll());
+            editor->document()->setPlainText(saved);
+            this->tempFile.close();
+            }
+        }
+        else{
+            editor->document()->undo();
+        }
+    }
+}
