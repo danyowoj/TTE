@@ -62,6 +62,10 @@ private slots:
 
     void setupShortcuts();
 
+    void on_Clear_triggered();
+
+    void on_Undo_triggered();
+
 private:
     Ui::MainWindow *ui;
     int pageIndex;
