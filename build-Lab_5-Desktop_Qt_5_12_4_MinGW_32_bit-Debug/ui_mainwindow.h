@@ -15,6 +15,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -46,6 +47,7 @@ public:
     QAction *Paddins;
     QWidget *centralWidget;
     QTabWidget *tabWidget;
+    QPushButton *GoToGraphic;
     QMenuBar *menuBar;
     QMenu *menu;
     QMenu *menu_2;
@@ -164,7 +166,10 @@ public:
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 641, 361));
+        tabWidget->setGeometry(QRect(-1, -1, 641, 331));
+        GoToGraphic = new QPushButton(centralWidget);
+        GoToGraphic->setObjectName(QString::fromUtf8("GoToGraphic"));
+        GoToGraphic->setGeometry(QRect(-1, 328, 641, 31));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -262,6 +267,7 @@ public:
         DeleteRow->setText(QApplication::translate("MainWindow", "\320\243\320\261\321\200\320\260\321\202\321\214 \321\201\321\202\321\200\320\276\320\272\321\203", nullptr));
         DeleteColumn->setText(QApplication::translate("MainWindow", "\320\243\320\261\321\200\320\260\321\202\321\214 \321\201\321\202\320\276\320\273\320\261\320\265\321\206", nullptr));
         Paddins->setText(QApplication::translate("MainWindow", "\320\236\321\202\321\201\321\202\321\203\320\277\321\213", nullptr));
+        GoToGraphic->setText(QApplication::translate("MainWindow", "\320\223\321\200\320\260\321\204\320\270\321\207\320\265\321\201\320\272\320\270\320\271 \321\200\320\265\320\264\320\260\320\272\321\202\320\276\321\200", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\320\234\320\265\320\275\321\216", nullptr));
         menu_2->setTitle(QApplication::translate("MainWindow", "\320\240\320\265\320\264\320\260\320\272\321\202\320\270\321\200\320\276\320\262\320\260\320\275\320\270\320\265", nullptr));
         menu_3->setTitle(QApplication::translate("MainWindow", "\320\242\320\265\320\272\321\201\321\202", nullptr));
