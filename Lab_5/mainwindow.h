@@ -29,6 +29,8 @@
 #include <QRadioButton>
 #include <QTemporaryFile>
 
+#include "graphicseditor.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -40,6 +42,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+//    void createImage();
 
 private slots:
     void on_CreateNewFile_triggered();
@@ -94,6 +98,10 @@ private slots:
 
     void on_Paddins_triggered();
 
+    void on_GoToGraphic_clicked();
+
+    void resetEditorWindow();
+
 private:
     Ui::MainWindow *ui;
     int pageIndex;
@@ -105,6 +113,7 @@ private:
     QString appDir = "Laboratory_5";
     bool tableModified = true;
     static QTemporaryFile tempFile;
+    GraphicsEditor *graphicEditor;
 };
 
 #endif // MAINWINDOW_H
