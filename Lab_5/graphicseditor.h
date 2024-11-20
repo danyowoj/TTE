@@ -13,6 +13,7 @@
 #include <QDialog>
 #include <QGraphicsPixmapItem>
 #include <QDebug>
+#include <QLabel>
 
 #include "graphicsview.h" // Подключаем наш новый класс GraphicsView
 
@@ -32,6 +33,7 @@ public:
         QGraphicsPixmapItem* getBottomWall() const { return bottomWall; }
         QGraphicsPixmapItem* getLeftWall() const { return leftWall; }
         QGraphicsPixmapItem* getRightWall() const { return rightWall; }
+        QList<QGraphicsItemGroup*> getMovingItemGroups() const { return movingItemGroups; }
 
 signals:
     void editorClosed();
@@ -53,6 +55,7 @@ private slots:
     void groupSetFlags(QGraphicsItemGroup *group);
     void textSetFlags(QGraphicsTextItem *item);
     Qt::BrushStyle stringToBrushStyle(const QString &styleStr);
+    void on_Eraser_triggered();
 
 private:
     Ui::GraphicsEditor *ui;
