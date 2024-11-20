@@ -11,10 +11,12 @@
 #include <QPushButton>
 #include <QPen>
 #include <QDialog>
+#include <QGraphicsPixmapItem>
 
-#include "GraphicsView.h"// Подключаем наш новый класс GraphicsView
+#include "graphicsview.h" // Подключаем наш новый класс GraphicsView
 
-namespace Ui {
+namespace Ui
+{
 class GraphicsEditor;
 }
 
@@ -31,6 +33,7 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private slots:
     void on_BackColor_triggered();
@@ -38,12 +41,21 @@ private slots:
 
     void on_Clear_triggered();
 
+    void setupWalls();
+    void updateWallPositions();
+    void on_AddFigure_triggered();
+    void addShape(QString shapeType, QRectF rect, QColor fillColor, QColor strokeColor, int strokeWidth);
+
 private:
     Ui::GraphicsEditor *ui;
     QGraphicsScene *scene;
-    QColor currentColor;  // Цвет кисти
+    QColor currentColor;
     QPen currentPen;
-     GraphicsView *view;
+    GraphicsView *view;
+    QGraphicsPixmapItem *topWall;
+    QGraphicsPixmapItem *bottomWall;
+    QGraphicsPixmapItem *leftWall;
+    QGraphicsPixmapItem *rightWall;
 };
 
 #endif // GRAPHICSEDITOR_H
