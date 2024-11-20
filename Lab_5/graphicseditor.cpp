@@ -125,8 +125,19 @@ void GraphicsEditor::on_SetPen_triggered()
 
 void GraphicsEditor::on_Clear_triggered()
 {
-    scene->clear();
-    scene->setBackgroundBrush(Qt::white);
+        // Получаем список всех объектов на сцене
+        QList<QGraphicsItem *> items = scene->items();
+        // Удаляем все объекты, кроме стен
+        foreach (QGraphicsItem *item, items) {
+            // Проверяем, что это не стена
+            if (item != topWall && item != bottomWall && item != leftWall && item != rightWall) {
+                scene->removeItem(item);  // Убираем из сцены
+                delete item;              // Удаляем объект
+            }
+        }
+        // Опционально можно перерисовать стены, чтобы они точно остались на месте
+        setupWalls();
+    scene->setBackgroundBrush(Qt::white);  // Reset background color if necessary
 }
 
 void GraphicsEditor::resizeEvent(QResizeEvent *event)
@@ -202,10 +213,9 @@ void GraphicsEditor::on_AddFigure_triggered()
     shapeComboBox->addItem("Треугольник", "Triangle");
     shapeComboBox->addItem("Круг", "Circle");
     shapeComboBox->addItem("Эллипс", "Ellipse");
-    shapeComboBox->setCurrentIndex(0);
     formLayout->addRow(tr("Тип фигуры:"), shapeComboBox);
 
-    // Ввод размеров (ширина и высота)
+    // Ввод размера (ширина и высота)
     QSpinBox *widthSpinBox = new QSpinBox();
     widthSpinBox->setRange(1, 1000);
     widthSpinBox->setValue(100);
@@ -216,6 +226,25 @@ void GraphicsEditor::on_AddFigure_triggered()
     heightSpinBox->setValue(100);
     formLayout->addRow(tr("Высота:"), heightSpinBox);
 
+    // Функция, которая будет изменять поля в зависимости от выбранной фигуры
+    auto updateShapeInputs = [&]() {
+        QString shapeType = shapeComboBox->currentData().toString();
+        if (shapeType == "Square") {
+            heightSpinBox->setValue(widthSpinBox->value());  // Устанавливаем высоту равной ширине
+            heightSpinBox->setEnabled(false);  // Выключаем поле высоты
+        } else if (shapeType == "Circle") {
+            heightSpinBox->setValue(widthSpinBox->value());  // Устанавливаем высоту равной ширине для радиуса
+            heightSpinBox->setEnabled(false);  // Выключаем поле высоты
+        } else {
+            heightSpinBox->setEnabled(true);  // Включаем поле высоты для других фигур
+        }
+    };
+    // Обновление полей при изменении типа фигуры
+    connect(shapeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), updateShapeInputs);
+
+
+    // Изначально вызываем функцию для корректного отображения полей
+    updateShapeInputs();
     // Выбор цвета заливки
     QPushButton *fillColorButton = new QPushButton(tr("Цвет заливки"));
     QColor fillColor = Qt::yellow;
@@ -248,47 +277,41 @@ void GraphicsEditor::on_AddFigure_triggered()
     strokeWidthSpinBox->setValue(2);
     formLayout->addRow(tr("Ширина обводки:"), strokeWidthSpinBox);
 
+    QComboBox *brushComboBox = new QComboBox();
+    brushComboBox->addItem("Кисть не задана", "NoBrush");
+    brushComboBox->addItem("Однородный цвет", "SolidPattern");
+    brushComboBox->addItem("Чрезвычайно плотная кисть", "Dense1Pattern");
+    brushComboBox->addItem("Очень плотная кисть", "Dense2Pattern");
+    brushComboBox->addItem("Довольно плотная кисть", "Dense3Pattern");
+    brushComboBox->addItem("Наполовину плотная кисть", "Dense4Pattern");
+    brushComboBox->addItem("Довольно редкая кисть", "Dense5Pattern");
+    brushComboBox->addItem("Очень редкая кисть", "Dense6Pattern");
+    brushComboBox->addItem("Чрезвычайно редкая кисть", "Dense7Pattern");
+    brushComboBox->addItem("Горизонтальные линии", "HorPattern");
+    brushComboBox->addItem("Вертикальные линии", "VerPattern");
+    brushComboBox->addItem("Пересекающиеся вертикальные и горизонтальные линии", "CrossPattern");
+    brushComboBox->addItem("Обратные диагональные линии", "BDiagPattern");
+    brushComboBox->addItem("Прямые диагональные линии", "FDiagPattern");
+    brushComboBox->addItem("Пересекающиеся диагональные линии", "DiagCrossPattern");
+    formLayout->addRow(tr("Тип заливки:"), brushComboBox);
     layout->addLayout(formLayout);
 
     // Кнопка ОК
     QPushButton *okButton = new QPushButton(tr("ОК"));
     layout->addWidget(okButton);
 
-    connect(shapeComboBox, &QComboBox::currentTextChanged, [&](const QString &type) {
-        disconnect(widthSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), nullptr, nullptr);
-            if (type == "Квадрат") {
-                heightSpinBox->setEnabled(false); // Выключаем изменение высоты для квадрата
-                heightSpinBox->setValue(widthSpinBox->value());
-                connect(widthSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int value) {
-                    heightSpinBox->setValue(value); // Связываем высоту с шириной
-                });
-            } else {
-                heightSpinBox->setEnabled(true); // Включаем изменение высоты для других фигур
-            }
-            if (type == "Круг") {
-                heightSpinBox->setEnabled(false); // Оставляем только одно поле для радиуса
-                heightSpinBox->setValue(widthSpinBox->value());
-                connect(widthSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int value) {
-                    heightSpinBox->setValue(value); // Радиус у круга одинаков
-                });
-            } else {
-                heightSpinBox->setEnabled(true); // Включаем второе поле для эллипса и прямоугольника
-            }
-            if (type == "Эллипс") {
-                heightSpinBox->setEnabled(true); // Включаем оба поля для эллипса
-            }
-        });
-    shapeComboBox->setCurrentIndex(0);
     connect(okButton, &QPushButton::clicked, [&]() {
         // Получаем значения из формы
         QString shapeType = shapeComboBox->currentData().toString();
         int width = widthSpinBox->value();
-        int height = heightSpinBox->value();
+        int height = (shapeType == "Square" || shapeType == "Circle") ? width : heightSpinBox->value();
         int x = (view->viewport()->width() - width) / 2;  // Центрируем фигуру
         int y = (view->viewport()->height() - height) / 2;
 
+        QString brushStyleStr = brushComboBox->currentData().toString();
+        Qt::BrushStyle brushStyle = stringToBrushStyle(brushStyleStr);
         // Добавляем фигуру
-        addShape(shapeType, QRectF(x, y, width, height), fillColor, strokeColor, strokeWidthSpinBox->value());
+        addShape(shapeType, QRectF(x, y, width, height), fillColor, brushStyle, strokeColor, strokeWidthSpinBox->value());
 
         dialog.accept(); // Закрыть диалог
     });
@@ -296,11 +319,11 @@ void GraphicsEditor::on_AddFigure_triggered()
     dialog.exec(); // Показать диалог
 }
 
-void GraphicsEditor::addShape(QString shapeType, QRectF rect, QColor fillColor, QColor strokeColor, int strokeWidth)
+void GraphicsEditor::addShape(QString shapeType, QRectF rect, QColor fillColor, Qt::BrushStyle brushStyle, QColor strokeColor, int strokeWidth)
 {
     QGraphicsItem *shape = nullptr;
     QPen pen(strokeColor, strokeWidth);
-    QBrush brush(fillColor);
+    QBrush brush(fillColor, brushStyle);
 
     if (shapeType == "Square") {
         // Квадрат (равные ширина и высота)
@@ -323,20 +346,89 @@ void GraphicsEditor::addShape(QString shapeType, QRectF rect, QColor fillColor, 
         shape = scene->addPolygon(triangle, pen, brush);
     }
 
-    if (shape) {
         shape->setFlag(QGraphicsItem::ItemIsMovable, true); // Фигуры можно перемещать
         shape->setFlag(QGraphicsItem::ItemIsSelectable, true); // Фигуры можно выделять
         shape->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 
-    }
 }
+
 void GraphicsEditor::on_DeleteFigure_triggered()
 {
     // Получаем список всех выбранных объектов на сцене
-        QList<QGraphicsItem *> selectedItems = scene->selectedItems();
-        // Удаляем все выбранные объекты
-        foreach (QGraphicsItem *item, selectedItems) {
-            scene->removeItem(item); // Убираем из сцены
+    QList<QGraphicsItem *> selectedItems = scene->selectedItems();
+
+    // Проверка, есть ли вообще выбранные элементы
+    if (selectedItems.isEmpty()) {
+        qDebug() << "No items selected for deletion.";
+        return;
+    }
+    // Выводим количество выбранных объектов
+    qDebug() << "Selected items count:" << selectedItems.count();
+    foreach (QGraphicsItem *item, selectedItems) {
+        qDebug() << "Item type:" << item->type();
+        if (QGraphicsItemGroup *group = qgraphicsitem_cast<QGraphicsItemGroup *>(item)) {
+            // Если это группа, выводим информацию и удаляем её элементы
+            qDebug() << "Removing group with child items.";
+            QList<QGraphicsItem *> children = group->childItems();
+            for (QGraphicsItem *child : children) {
+                qDebug() << "Removing child item:" << child;
+                scene->removeItem(child);  // Убираем элемент из сцены
+                delete child;              // Удаляем элемент
+            }
+            scene->removeItem(group);  // Убираем саму группу из сцены
+            delete group;              // Удаляем саму группу
+        } else {
+            // Если это не группа, удаляем только объект
+            qDebug() << "Removing single item:" << item;
+            scene->removeItem(item);  // Убираем объект из сцены
             delete item;              // Удаляем объект
         }
+    }
+    // Обновляем сцену и выводим сообщение
+    scene->update();
+    qDebug() << "Scene updated after deletion.";
+}
+
+void GraphicsEditor::groupSetFlags(QGraphicsItemGroup *group){
+    group->setFlag(QGraphicsItem::ItemIsMovable, true);
+    group->setFlag(QGraphicsItem::ItemIsSelectable, true);
+    group->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+}
+void GraphicsEditor::textSetFlags(QGraphicsTextItem *item){
+        item->setFlag(QGraphicsItem::ItemIsMovable, true);
+        item->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+}
+Qt::BrushStyle GraphicsEditor::stringToBrushStyle(const QString &styleStr) {
+    if (styleStr == "SolidPattern") {
+        return Qt::SolidPattern;
+    } else if (styleStr == "Dense1Pattern") {
+        return Qt::Dense1Pattern;
+    } else if (styleStr == "Dense2Pattern") {
+        return Qt::Dense2Pattern;
+    } else if (styleStr == "Dense3Pattern") {
+        return Qt::Dense3Pattern;
+    } else if (styleStr == "Dense4Pattern") {
+        return Qt::Dense4Pattern;
+    } else if (styleStr == "Dense5Pattern") {
+        return Qt::Dense5Pattern;
+    } else if (styleStr == "Dense6Pattern") {
+        return Qt::Dense6Pattern;
+    } else if (styleStr == "Dense7Pattern") {
+        return Qt::Dense7Pattern;
+    } else if (styleStr == "HorPattern") {
+        return Qt::HorPattern;
+    } else if (styleStr == "VerPattern") {
+        return Qt::VerPattern;
+    } else if (styleStr == "CrossPattern") {
+        return Qt::CrossPattern;
+    } else if (styleStr == "BDiagPattern") {
+        return Qt::BDiagPattern;
+    } else if (styleStr == "FDiagPattern") {
+        return Qt::FDiagPattern;
+    } else if (styleStr == "DiagCrossPattern") {
+        return Qt::DiagCrossPattern;
+    } else {
+        return Qt::NoBrush;  // Default if no match
+    }
 }
