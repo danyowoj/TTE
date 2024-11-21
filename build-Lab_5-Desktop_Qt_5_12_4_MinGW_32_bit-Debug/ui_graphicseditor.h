@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QToolBar>
@@ -30,7 +29,6 @@ public:
     QAction *DeleteFigure;
     QAction *Eraser;
     QWidget *centralwidget;
-    QGraphicsView *graphicsView;
     QMenuBar *menubar;
     QToolBar *toolBar;
     QToolBar *toolBar_2;
@@ -54,9 +52,6 @@ public:
         Eraser->setObjectName(QString::fromUtf8("Eraser"));
         centralwidget = new QWidget(GraphicsEditor);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        graphicsView = new QGraphicsView(centralwidget);
-        graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(0, 0, 1091, 671));
         GraphicsEditor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(GraphicsEditor);
         menubar->setObjectName(QString::fromUtf8("menubar"));

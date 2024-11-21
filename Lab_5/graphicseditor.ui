@@ -13,18 +13,7 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QGraphicsView" name="graphicsView">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>1091</width>
-      <height>671</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -50,6 +39,7 @@
    <addaction name="Clear"/>
    <addaction name="AddFigure"/>
    <addaction name="DeleteFigure"/>
+   <addaction name="Eraser"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
    <property name="windowTitle">
@@ -85,6 +75,11 @@
   <action name="DeleteFigure">
    <property name="text">
     <string>Удалить фигуру</string>
+   </property>
+  </action>
+  <action name="Eraser">
+   <property name="text">
+    <string>Ластик</string>
    </property>
   </action>
  </widget>

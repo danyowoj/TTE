@@ -13,9 +13,12 @@
 #include <QDialog>
 #include <QGraphicsPixmapItem>
 #include <QDebug>
-
+#include <QTimer>
+#include <QSound>
+#include <QRandomGenerator>
+#include <QtMath>
+#include <QLabel>
 #include "graphicsview.h" // Подключаем наш новый класс GraphicsView
-
 namespace Ui
 {
     class GraphicsEditor;
@@ -32,6 +35,7 @@ public:
         QGraphicsPixmapItem* getBottomWall() const { return bottomWall; }
         QGraphicsPixmapItem* getLeftWall() const { return leftWall; }
         QGraphicsPixmapItem* getRightWall() const { return rightWall; }
+        QList<QGraphicsItemGroup*> getMovingItemGroups() const { return movingItemGroups; }
 
 signals:
     void editorClosed();
@@ -41,10 +45,13 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private slots:
+    void on_Eraser_triggered();
+    void setupWalls();
+    void moveObject();
+    void createMovingObject();
     void on_BackColor_triggered();
     void on_SetPen_triggered();
     void on_Clear_triggered();
-    void setupWalls();
     void updateWallPositions();
     void on_AddFigure_triggered();
     void addShape(QString shapeType, QRectF rect, QColor fillColor, Qt::BrushStyle brushStyle, QColor strokeColor, int strokeWidth);
@@ -66,6 +73,12 @@ private:
     QGraphicsPixmapItem *bottomWall;
     QGraphicsPixmapItem *leftWall;
     QGraphicsPixmapItem *rightWall;
+
+    QTimer *moveTimer;
+    
+    QList<QGraphicsItemGroup*> movingItemGroups;  // Список движущихся объектов
+    QList<QPointF> velocities;
+    QSound collisionSound;
 };
 
 #endif // GRAPHICSEDITOR_H

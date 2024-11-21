@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_GraphicsEditor_t {
-    QByteArrayData data[27];
-    char stringdata0[373];
+    QByteArrayData data[30];
+    char stringdata0[423];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,43 +34,47 @@ static const qt_meta_stringdata_GraphicsEditor_t qt_meta_stringdata_GraphicsEdit
 QT_MOC_LITERAL(0, 0, 14), // "GraphicsEditor"
 QT_MOC_LITERAL(1, 15, 12), // "editorClosed"
 QT_MOC_LITERAL(2, 28, 0), // ""
-QT_MOC_LITERAL(3, 29, 22), // "on_BackColor_triggered"
-QT_MOC_LITERAL(4, 52, 19), // "on_SetPen_triggered"
-QT_MOC_LITERAL(5, 72, 18), // "on_Clear_triggered"
-QT_MOC_LITERAL(6, 91, 10), // "setupWalls"
-QT_MOC_LITERAL(7, 102, 19), // "updateWallPositions"
-QT_MOC_LITERAL(8, 122, 22), // "on_AddFigure_triggered"
-QT_MOC_LITERAL(9, 145, 8), // "addShape"
-QT_MOC_LITERAL(10, 154, 9), // "shapeType"
-QT_MOC_LITERAL(11, 164, 4), // "rect"
-QT_MOC_LITERAL(12, 169, 9), // "fillColor"
-QT_MOC_LITERAL(13, 179, 14), // "Qt::BrushStyle"
-QT_MOC_LITERAL(14, 194, 10), // "brushStyle"
-QT_MOC_LITERAL(15, 205, 11), // "strokeColor"
-QT_MOC_LITERAL(16, 217, 11), // "strokeWidth"
-QT_MOC_LITERAL(17, 229, 25), // "on_DeleteFigure_triggered"
-QT_MOC_LITERAL(18, 255, 12), // "drawPanchina"
-QT_MOC_LITERAL(19, 268, 13), // "groupSetFlags"
-QT_MOC_LITERAL(20, 282, 19), // "QGraphicsItemGroup*"
-QT_MOC_LITERAL(21, 302, 5), // "group"
-QT_MOC_LITERAL(22, 308, 12), // "textSetFlags"
-QT_MOC_LITERAL(23, 321, 18), // "QGraphicsTextItem*"
-QT_MOC_LITERAL(24, 340, 4), // "item"
-QT_MOC_LITERAL(25, 345, 18), // "stringToBrushStyle"
-QT_MOC_LITERAL(26, 364, 8) // "styleStr"
+QT_MOC_LITERAL(3, 29, 19), // "on_Eraser_triggered"
+QT_MOC_LITERAL(4, 49, 10), // "setupWalls"
+QT_MOC_LITERAL(5, 60, 10), // "moveObject"
+QT_MOC_LITERAL(6, 71, 18), // "createMovingObject"
+QT_MOC_LITERAL(7, 90, 22), // "on_BackColor_triggered"
+QT_MOC_LITERAL(8, 113, 19), // "on_SetPen_triggered"
+QT_MOC_LITERAL(9, 133, 18), // "on_Clear_triggered"
+QT_MOC_LITERAL(10, 152, 19), // "updateWallPositions"
+QT_MOC_LITERAL(11, 172, 22), // "on_AddFigure_triggered"
+QT_MOC_LITERAL(12, 195, 8), // "addShape"
+QT_MOC_LITERAL(13, 204, 9), // "shapeType"
+QT_MOC_LITERAL(14, 214, 4), // "rect"
+QT_MOC_LITERAL(15, 219, 9), // "fillColor"
+QT_MOC_LITERAL(16, 229, 14), // "Qt::BrushStyle"
+QT_MOC_LITERAL(17, 244, 10), // "brushStyle"
+QT_MOC_LITERAL(18, 255, 11), // "strokeColor"
+QT_MOC_LITERAL(19, 267, 11), // "strokeWidth"
+QT_MOC_LITERAL(20, 279, 25), // "on_DeleteFigure_triggered"
+QT_MOC_LITERAL(21, 305, 12), // "drawPanchina"
+QT_MOC_LITERAL(22, 318, 13), // "groupSetFlags"
+QT_MOC_LITERAL(23, 332, 19), // "QGraphicsItemGroup*"
+QT_MOC_LITERAL(24, 352, 5), // "group"
+QT_MOC_LITERAL(25, 358, 12), // "textSetFlags"
+QT_MOC_LITERAL(26, 371, 18), // "QGraphicsTextItem*"
+QT_MOC_LITERAL(27, 390, 4), // "item"
+QT_MOC_LITERAL(28, 395, 18), // "stringToBrushStyle"
+QT_MOC_LITERAL(29, 414, 8) // "styleStr"
 
     },
     "GraphicsEditor\0editorClosed\0\0"
+    "on_Eraser_triggered\0setupWalls\0"
+    "moveObject\0createMovingObject\0"
     "on_BackColor_triggered\0on_SetPen_triggered\0"
-    "on_Clear_triggered\0setupWalls\0"
-    "updateWallPositions\0on_AddFigure_triggered\0"
-    "addShape\0shapeType\0rect\0fillColor\0"
-    "Qt::BrushStyle\0brushStyle\0strokeColor\0"
-    "strokeWidth\0on_DeleteFigure_triggered\0"
-    "drawPanchina\0groupSetFlags\0"
-    "QGraphicsItemGroup*\0group\0textSetFlags\0"
-    "QGraphicsTextItem*\0item\0stringToBrushStyle\0"
-    "styleStr"
+    "on_Clear_triggered\0updateWallPositions\0"
+    "on_AddFigure_triggered\0addShape\0"
+    "shapeType\0rect\0fillColor\0Qt::BrushStyle\0"
+    "brushStyle\0strokeColor\0strokeWidth\0"
+    "on_DeleteFigure_triggered\0drawPanchina\0"
+    "groupSetFlags\0QGraphicsItemGroup*\0"
+    "group\0textSetFlags\0QGraphicsTextItem*\0"
+    "item\0stringToBrushStyle\0styleStr"
 };
 #undef QT_MOC_LITERAL
 
@@ -80,7 +84,7 @@ static const uint qt_meta_data_GraphicsEditor[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
+      16,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -88,21 +92,24 @@ static const uint qt_meta_data_GraphicsEditor[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   79,    2, 0x06 /* Public */,
+       1,    0,   94,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       3,    0,   80,    2, 0x08 /* Private */,
-       4,    0,   81,    2, 0x08 /* Private */,
-       5,    0,   82,    2, 0x08 /* Private */,
-       6,    0,   83,    2, 0x08 /* Private */,
-       7,    0,   84,    2, 0x08 /* Private */,
-       8,    0,   85,    2, 0x08 /* Private */,
-       9,    6,   86,    2, 0x08 /* Private */,
-      17,    0,   99,    2, 0x08 /* Private */,
-      18,    0,  100,    2, 0x08 /* Private */,
-      19,    1,  101,    2, 0x08 /* Private */,
-      22,    1,  104,    2, 0x08 /* Private */,
-      25,    1,  107,    2, 0x08 /* Private */,
+       3,    0,   95,    2, 0x08 /* Private */,
+       4,    0,   96,    2, 0x08 /* Private */,
+       5,    0,   97,    2, 0x08 /* Private */,
+       6,    0,   98,    2, 0x08 /* Private */,
+       7,    0,   99,    2, 0x08 /* Private */,
+       8,    0,  100,    2, 0x08 /* Private */,
+       9,    0,  101,    2, 0x08 /* Private */,
+      10,    0,  102,    2, 0x08 /* Private */,
+      11,    0,  103,    2, 0x08 /* Private */,
+      12,    6,  104,    2, 0x08 /* Private */,
+      20,    0,  117,    2, 0x08 /* Private */,
+      21,    0,  118,    2, 0x08 /* Private */,
+      22,    1,  119,    2, 0x08 /* Private */,
+      25,    1,  122,    2, 0x08 /* Private */,
+      28,    1,  125,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
@@ -114,12 +121,15 @@ static const uint qt_meta_data_GraphicsEditor[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::QRectF, QMetaType::QColor, 0x80000000 | 13, QMetaType::QColor, QMetaType::Int,   10,   11,   12,   14,   15,   16,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 20,   21,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString, QMetaType::QRectF, QMetaType::QColor, 0x80000000 | 16, QMetaType::QColor, QMetaType::Int,   13,   14,   15,   17,   18,   19,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void, 0x80000000 | 23,   24,
-    0x80000000 | 13, QMetaType::QString,   26,
+    QMetaType::Void, 0x80000000 | 26,   27,
+    0x80000000 | 16, QMetaType::QString,   29,
 
        0        // eod
 };
@@ -131,25 +141,28 @@ void GraphicsEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->editorClosed(); break;
-        case 1: _t->on_BackColor_triggered(); break;
-        case 2: _t->on_SetPen_triggered(); break;
-        case 3: _t->on_Clear_triggered(); break;
-        case 4: _t->setupWalls(); break;
-        case 5: _t->updateWallPositions(); break;
-        case 6: _t->on_AddFigure_triggered(); break;
-        case 7: _t->addShape((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2])),(*reinterpret_cast< QColor(*)>(_a[3])),(*reinterpret_cast< Qt::BrushStyle(*)>(_a[4])),(*reinterpret_cast< QColor(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
-        case 8: _t->on_DeleteFigure_triggered(); break;
-        case 9: _t->drawPanchina(); break;
-        case 10: _t->groupSetFlags((*reinterpret_cast< QGraphicsItemGroup*(*)>(_a[1]))); break;
-        case 11: _t->textSetFlags((*reinterpret_cast< QGraphicsTextItem*(*)>(_a[1]))); break;
-        case 12: { Qt::BrushStyle _r = _t->stringToBrushStyle((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 1: _t->on_Eraser_triggered(); break;
+        case 2: _t->setupWalls(); break;
+        case 3: _t->moveObject(); break;
+        case 4: _t->createMovingObject(); break;
+        case 5: _t->on_BackColor_triggered(); break;
+        case 6: _t->on_SetPen_triggered(); break;
+        case 7: _t->on_Clear_triggered(); break;
+        case 8: _t->updateWallPositions(); break;
+        case 9: _t->on_AddFigure_triggered(); break;
+        case 10: _t->addShape((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2])),(*reinterpret_cast< QColor(*)>(_a[3])),(*reinterpret_cast< Qt::BrushStyle(*)>(_a[4])),(*reinterpret_cast< QColor(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
+        case 11: _t->on_DeleteFigure_triggered(); break;
+        case 12: _t->drawPanchina(); break;
+        case 13: _t->groupSetFlags((*reinterpret_cast< QGraphicsItemGroup*(*)>(_a[1]))); break;
+        case 14: _t->textSetFlags((*reinterpret_cast< QGraphicsTextItem*(*)>(_a[1]))); break;
+        case 15: { Qt::BrushStyle _r = _t->stringToBrushStyle((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< Qt::BrushStyle*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 11:
+        case 14:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -198,13 +211,13 @@ int GraphicsEditor::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 16)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 16;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 13)
+        if (_id < 16)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 16;
     }
     return _id;
 }
