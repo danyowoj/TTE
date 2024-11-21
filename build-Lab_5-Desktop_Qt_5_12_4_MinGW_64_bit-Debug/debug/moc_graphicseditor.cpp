@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_GraphicsEditor_t {
-    QByteArrayData data[27];
-    char stringdata0[373];
+    QByteArrayData data[34];
+    char stringdata0[491];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -50,14 +50,21 @@ QT_MOC_LITERAL(15, 205, 11), // "strokeColor"
 QT_MOC_LITERAL(16, 217, 11), // "strokeWidth"
 QT_MOC_LITERAL(17, 229, 25), // "on_DeleteFigure_triggered"
 QT_MOC_LITERAL(18, 255, 12), // "drawKapustin"
-QT_MOC_LITERAL(19, 268, 13), // "groupSetFlags"
-QT_MOC_LITERAL(20, 282, 19), // "QGraphicsItemGroup*"
-QT_MOC_LITERAL(21, 302, 5), // "group"
-QT_MOC_LITERAL(22, 308, 12), // "textSetFlags"
-QT_MOC_LITERAL(23, 321, 18), // "QGraphicsTextItem*"
-QT_MOC_LITERAL(24, 340, 4), // "item"
-QT_MOC_LITERAL(25, 345, 18), // "stringToBrushStyle"
-QT_MOC_LITERAL(26, 364, 8) // "styleStr"
+QT_MOC_LITERAL(19, 268, 11), // "drawFrolova"
+QT_MOC_LITERAL(20, 280, 11), // "drawNazarov"
+QT_MOC_LITERAL(21, 292, 13), // "groupSetFlags"
+QT_MOC_LITERAL(22, 306, 19), // "QGraphicsItemGroup*"
+QT_MOC_LITERAL(23, 326, 5), // "group"
+QT_MOC_LITERAL(24, 332, 12), // "textSetFlags"
+QT_MOC_LITERAL(25, 345, 18), // "QGraphicsTextItem*"
+QT_MOC_LITERAL(26, 364, 4), // "item"
+QT_MOC_LITERAL(27, 369, 18), // "stringToBrushStyle"
+QT_MOC_LITERAL(28, 388, 8), // "styleStr"
+QT_MOC_LITERAL(29, 397, 20), // "createMovingObject_1"
+QT_MOC_LITERAL(30, 418, 20), // "createMovingObject_2"
+QT_MOC_LITERAL(31, 439, 20), // "createMovingObject_3"
+QT_MOC_LITERAL(32, 460, 10), // "moveObject"
+QT_MOC_LITERAL(33, 471, 19) // "on_Eraser_triggered"
 
     },
     "GraphicsEditor\0editorClosed\0\0"
@@ -67,10 +74,13 @@ QT_MOC_LITERAL(26, 364, 8) // "styleStr"
     "addShape\0shapeType\0rect\0fillColor\0"
     "Qt::BrushStyle\0brushStyle\0strokeColor\0"
     "strokeWidth\0on_DeleteFigure_triggered\0"
-    "drawKapustin\0groupSetFlags\0"
-    "QGraphicsItemGroup*\0group\0textSetFlags\0"
-    "QGraphicsTextItem*\0item\0stringToBrushStyle\0"
-    "styleStr"
+    "drawKapustin\0"
+    "groupSetFlags\0QGraphicsItemGroup*\0"
+    "group\0textSetFlags\0QGraphicsTextItem*\0"
+    "item\0stringToBrushStyle\0styleStr\0"
+    "createMovingObject_1\0createMovingObject_2\0"
+    "createMovingObject_3\0moveObject\0"
+    "on_Eraser_triggered"
 };
 #undef QT_MOC_LITERAL
 
@@ -80,7 +90,7 @@ static const uint qt_meta_data_GraphicsEditor[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
+      20,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -88,21 +98,28 @@ static const uint qt_meta_data_GraphicsEditor[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   79,    2, 0x06 /* Public */,
+       1,    0,  114,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       3,    0,   80,    2, 0x08 /* Private */,
-       4,    0,   81,    2, 0x08 /* Private */,
-       5,    0,   82,    2, 0x08 /* Private */,
-       6,    0,   83,    2, 0x08 /* Private */,
-       7,    0,   84,    2, 0x08 /* Private */,
-       8,    0,   85,    2, 0x08 /* Private */,
-       9,    6,   86,    2, 0x08 /* Private */,
-      17,    0,   99,    2, 0x08 /* Private */,
-      18,    0,  100,    2, 0x08 /* Private */,
-      19,    1,  101,    2, 0x08 /* Private */,
-      22,    1,  104,    2, 0x08 /* Private */,
-      25,    1,  107,    2, 0x08 /* Private */,
+       3,    0,  115,    2, 0x08 /* Private */,
+       4,    0,  116,    2, 0x08 /* Private */,
+       5,    0,  117,    2, 0x08 /* Private */,
+       6,    0,  118,    2, 0x08 /* Private */,
+       7,    0,  119,    2, 0x08 /* Private */,
+       8,    0,  120,    2, 0x08 /* Private */,
+       9,    6,  121,    2, 0x08 /* Private */,
+      17,    0,  134,    2, 0x08 /* Private */,
+      18,    0,  135,    2, 0x08 /* Private */,
+      19,    0,  136,    2, 0x08 /* Private */,
+      20,    0,  137,    2, 0x08 /* Private */,
+      21,    1,  138,    2, 0x08 /* Private */,
+      24,    1,  141,    2, 0x08 /* Private */,
+      27,    1,  144,    2, 0x08 /* Private */,
+      29,    0,  147,    2, 0x08 /* Private */,
+      30,    0,  148,    2, 0x08 /* Private */,
+      31,    0,  149,    2, 0x08 /* Private */,
+      32,    0,  150,    2, 0x08 /* Private */,
+      33,    0,  151,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void,
@@ -117,9 +134,16 @@ static const uint qt_meta_data_GraphicsEditor[] = {
     QMetaType::Void, QMetaType::QString, QMetaType::QRectF, QMetaType::QColor, 0x80000000 | 13, QMetaType::QColor, QMetaType::Int,   10,   11,   12,   14,   15,   16,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 20,   21,
-    QMetaType::Void, 0x80000000 | 23,   24,
-    0x80000000 | 13, QMetaType::QString,   26,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 22,   23,
+    QMetaType::Void, 0x80000000 | 25,   26,
+    0x80000000 | 13, QMetaType::QString,   28,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -140,16 +164,19 @@ void GraphicsEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 7: _t->addShape((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2])),(*reinterpret_cast< QColor(*)>(_a[3])),(*reinterpret_cast< Qt::BrushStyle(*)>(_a[4])),(*reinterpret_cast< QColor(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
         case 8: _t->on_DeleteFigure_triggered(); break;
         case 9: _t->drawKapustin(); break;
-        case 10: _t->groupSetFlags((*reinterpret_cast< QGraphicsItemGroup*(*)>(_a[1]))); break;
-        case 11: _t->textSetFlags((*reinterpret_cast< QGraphicsTextItem*(*)>(_a[1]))); break;
-        case 12: { Qt::BrushStyle _r = _t->stringToBrushStyle((*reinterpret_cast< const QString(*)>(_a[1])));
+        case 12: _t->groupSetFlags((*reinterpret_cast< QGraphicsItemGroup*(*)>(_a[1]))); break;
+        case 13: _t->textSetFlags((*reinterpret_cast< QGraphicsTextItem*(*)>(_a[1]))); break;
+        case 14: { Qt::BrushStyle _r = _t->stringToBrushStyle((*reinterpret_cast< const QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< Qt::BrushStyle*>(_a[0]) = std::move(_r); }  break;
+        case 15: _t->createMovingObject_1(); break;
+        case 18: _t->moveObject(); break;
+        case 19: _t->on_Eraser_triggered(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<int*>(_a[0]) = -1; break;
-        case 11:
+        case 13:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<int*>(_a[0]) = -1; break;
             case 0:
@@ -198,13 +225,13 @@ int GraphicsEditor::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 20)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 20;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 13)
+        if (_id < 20)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 20;
     }
     return _id;
 }

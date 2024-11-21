@@ -13,6 +13,10 @@
 #include <QDialog>
 #include <QGraphicsPixmapItem>
 #include <QDebug>
+#include <QTimer>
+#include <QSound>
+#include <QRandomGenerator>
+#include <QtMath>
 #include <QLabel>
 
 #include "graphicsview.h" // Подключаем наш новый класс GraphicsView
@@ -52,9 +56,15 @@ private slots:
     void addShape(QString shapeType, QRectF rect, QColor fillColor, Qt::BrushStyle brushStyle, QColor strokeColor, int strokeWidth);
     void on_DeleteFigure_triggered();
     void drawKapustin();
+    void drawFrolova();
+    void drawNazarov();
     void groupSetFlags(QGraphicsItemGroup *group);
     void textSetFlags(QGraphicsTextItem *item);
     Qt::BrushStyle stringToBrushStyle(const QString &styleStr);
+    void createMovingObject_1();
+    void createMovingObject_2();
+    void createMovingObject_3();
+    void moveObject();
     void on_Eraser_triggered();
 
 private:
@@ -64,11 +74,17 @@ private:
     QPen currentPen;
     GraphicsView *view;
 
-
     QGraphicsPixmapItem *topWall;
     QGraphicsPixmapItem *bottomWall;
     QGraphicsPixmapItem *leftWall;
     QGraphicsPixmapItem *rightWall;
+
+    QTimer *moveTimer;
+
+    QList<QGraphicsItemGroup*> movingItemGroups;  // Список движущихся объектов
+    QList<QPointF> velocities;
+    QSound collisionSound;
+
 };
 
 #endif // GRAPHICSEDITOR_H

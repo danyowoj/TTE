@@ -28,6 +28,7 @@ void GraphicsView::setEraserMode(bool mode)
     isEraserMode = mode;
 }
 
+
 void GraphicsView::scrollContentsBy(int dx, int dy)
 {
     QGraphicsView::scrollContentsBy(dx, dy);
@@ -40,6 +41,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
         // Проверяем, находится ли точка в пределах окна
         // viewport()->rect().contains(event->pos())
         QGraphicsItem *selectedItem = scene()->itemAt(mapToScene(event->pos()), QTransform());
+
         if(selectedItem){
             QGraphicsItemGroup *itemGroup = dynamic_cast<QGraphicsItemGroup *>(selectedItem->topLevelItem());
                     if (selectedItem->flags().testFlag(QGraphicsItem::ItemIsMovable) || (itemGroup && itemGroup->flags().testFlag(QGraphicsItem::ItemIsMovable))) {
@@ -69,32 +71,22 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
     if (isEraserMode && isDrawing) {
-            QPoint currentPoint = mapToScene(event->pos()).toPoint();
+        QPoint currentPoint = mapToScene(event->pos()).toPoint();
             QPainterPath eraserPath;
             eraserPath.addEllipse(currentPoint, currentPen.width() / 2, currentPen.width() / 2); // Задаем область ластика
+
             QList<QGraphicsItem*> itemsToErase = scene()->items(eraserPath); // Находим объекты в области ластика
-            GraphicsEditor* editor = qobject_cast<GraphicsEditor*>(parent());
-            if (editor) {
-                QList<QGraphicsItemGroup*> movingGroups = editor->getMovingItemGroups();
-                for (QGraphicsItem* item : itemsToErase) {
-                    bool isUserCreated = item->data(0) == "user";
-                    QGraphicsItem* topLevelItem = item->topLevelItem();
-                    bool isPartOfMovingGroup = movingGroups.contains(dynamic_cast<QGraphicsItemGroup*>(topLevelItem));
-                    if (isUserCreated && !isPartOfMovingGroup) {
-                        // Получаем текущий размер объекта
-                        QRectF bounds = item->boundingRect();
-                        qreal scaleFactor = 0.9;  // Коэффициент уменьшения (настраиваемый)
-                        if (bounds.width() > 5 && bounds.height() > 5) {
-                            // Уменьшаем размер объекта, если он ещё достаточно велик
-                            item->setScale(item->scale() * scaleFactor);
-                        } else {
-                            // Если объект уже очень мал, удаляем его
-                            scene()->removeItem(item);
-                            delete item;
-                        }
-                    }
+
+            for (QGraphicsItem* item : itemsToErase) {
+                bool isUserCreated = item->data(0) == "user"; // Проверяем метку элемента
+
+                if (isUserCreated) {
+                    // Удаляем только нарисованные элементы
+                    scene()->removeItem(item);
+                    delete item;
                 }
             }
+
             lastPoint = currentPoint; // Обновляем точку для плавного стирания
         }
     else if (isDrawing && !isMovingShape)
@@ -116,18 +108,22 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
         // Добавляем линию на сцену
         QGraphicsPathItem *line = scene()->addPath(path, currentPen);
         line->setZValue(1);
+        line->setData(0, "user");
 
         lastPoint = currentPoint; // Обновляем последнюю точку
     }
     else if (isMovingShape) {
            QGraphicsItem *selectedItem = scene()->itemAt(mapToScene(event->pos()), QTransform());
+
                    if (selectedItem) {
+
                        // Проверяем, является ли элемент частью группы
                        QGraphicsItemGroup *itemGroup = dynamic_cast<QGraphicsItemGroup *>(selectedItem->topLevelItem());
                        if (itemGroup) {
                            // Перемещаем всю группу
                            QPointF currentPos = itemGroup->pos();
                            QPointF delta = mapToScene(event->pos()) - mapToScene(lastMousePos);  // Смещение от предыдущей позиции
+
                            // Проверка на столкновение с границами
                            GraphicsEditor* editor = qobject_cast<GraphicsEditor*>(parent());
                            if (editor) {
@@ -138,12 +134,14 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
                                    return;  // Прекращаем перемещение при столкновении с границей
                                }
                            }
+
                            // Применяем смещение к группе
                            itemGroup->setPos(currentPos + delta);
                        } else {
                            // Для обычных объектов
                            QPointF currentPos = selectedItem->pos();
                            QPointF delta = mapToScene(event->pos()) - mapToScene(lastMousePos);  // Смещение от предыдущей позиции
+
                            // Проверка на столкновение с границами
                            GraphicsEditor* editor = qobject_cast<GraphicsEditor*>(parent());
                            if (editor) {
@@ -154,18 +152,22 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
                                    return;  // Прекращаем перемещение при столкновении с границей
                                }
                            }
+
                            // Применяем смещение к объекту
                            selectedItem->setPos(currentPos + delta);
                        }
                    }
                }
+
                lastMousePos = event->pos();
     QGraphicsView::mouseMoveEvent(event); // Не забываем вызвать базовый метод
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
+
         isDrawing = false;
     isMovingShape = false;
     QGraphicsView::mouseReleaseEvent(event); // Не забываем вызвать базовый метод
 }
+

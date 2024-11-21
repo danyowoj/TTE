@@ -5,22 +5,33 @@ GraphicsEditor::GraphicsEditor(QWidget *parent) : QMainWindow(parent),
                                                   ui(new Ui::GraphicsEditor),
                                                   currentColor(Qt::white),
                                                   currentPen(Qt::black),
-                                                  topWall(nullptr), bottomWall(nullptr), leftWall(nullptr), rightWall(nullptr)
+                                                  topWall(nullptr), bottomWall(nullptr), leftWall(nullptr), rightWall(nullptr), collisionSound(":/res/sound.wav")
 {
     ui->setupUi(this);
 
     scene = new QGraphicsScene(this);
     view = new GraphicsView(scene, this);
+    setCentralWidget(view);
     view->setRenderHint(QPainter::Antialiasing);
     view->setRenderHint(QPainter::SmoothPixmapTransform);
     view->setAlignment(Qt::AlignTop | Qt::AlignLeft);                         // Выравнивание области просмотра
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);                // Включаем горизонтальную полосу прокрутки
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);                  // Включаем вертикальную полосу прокрутки
-    setCentralWidget(view);                                                   // Устанавливаем наш view как центральный виджет
+                                                       // Устанавливаем наш view как центральный виджет
 
     connect(view, &GraphicsView::viewportChanged, this, &GraphicsEditor::updateWallPositions);
     connect(view, &GraphicsView::resized, this, &GraphicsEditor::setupWalls); // Подключение сигнала resized к setupWalls
     setupWalls();
+
+    drawKapustin();
+    createMovingObject_1();
+
+//         Таймер для перемещения объекта
+        QTimer *timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, [this]() {
+            moveObject(); // Функция перемещения и обнаружения столкновений
+        });
+        timer->start(30); // Интервал обновления, например, 30 мс
 }
 
 GraphicsEditor::~GraphicsEditor()
@@ -30,6 +41,22 @@ GraphicsEditor::~GraphicsEditor()
 
 void GraphicsEditor::closeEvent(QCloseEvent *event)
 {
+    // Удаление всех движущихся объектов
+    for (QGraphicsItemGroup *itemGroup : movingItemGroups) {
+        QList<QGraphicsItem *> children = itemGroup->childItems();
+        for (QGraphicsItem *child : children) {
+            scene->removeItem(child);
+            delete child;
+        }
+        scene->removeItem(itemGroup);
+        delete itemGroup;
+    }
+    movingItemGroups.clear();
+    velocities.clear();
+
+    // Останавливаем звук
+    collisionSound.stop();
+
     emit editorClosed();
     QMainWindow::closeEvent(event);
 }
@@ -45,8 +72,169 @@ void GraphicsEditor::on_BackColor_triggered()
     }
 }
 
+void GraphicsEditor::createMovingObject_1()
+{
+    // Создание нескольких фигур для составного объекта
+    QGraphicsRectItem *body = new QGraphicsRectItem(15, 15, 75, 45);
+    body->setBrush(Qt::black);
+    QGraphicsRectItem *cab = new QGraphicsRectItem(75, 23, 35, 10);
+    cab->setBrush(Qt::lightGray);
+    QGraphicsRectItem *smoke = new QGraphicsRectItem(10, 0, 25, 30);
+    smoke->setBrush(Qt::lightGray);
+    QGraphicsRectItem *wheel1 = new QGraphicsRectItem(25, 40, 15, 30);
+    wheel1->setBrush(Qt::lightGray);
+    QGraphicsRectItem *wheel2 = new QGraphicsRectItem(60, 40, 15, 30);
+    wheel2->setBrush(Qt::lightGray);
+    QGraphicsRectItem *nose = new QGraphicsRectItem(16, 13, 12, 12);
+    nose->setBrush(Qt::black);
+    QGraphicsEllipseItem *Ear1 = new QGraphicsEllipseItem(-5, -4, 20, 10);
+    Ear1->setBrush(Qt::darkGray);
+    QGraphicsEllipseItem *Ear2 = new QGraphicsEllipseItem(30, -4, 20, 10);
+    Ear2->setBrush(Qt::darkGray);
+
+    // Группируем фигуры в один объект
+    QGraphicsItemGroup *train = new QGraphicsItemGroup();
+    train->addToGroup(body);
+    train->addToGroup(cab);
+    train->addToGroup(smoke);
+    train->addToGroup(wheel1);
+    train->addToGroup(wheel2);
+    train->addToGroup(nose);
+    train->addToGroup(Ear1);
+    train->addToGroup(Ear2);
+
+    // Добавляем объект на сцену
+    train->setFlag(QGraphicsItem::ItemIsSelectable, true);
+    scene->addItem(train);
+
+    train->setPos(400, 500);  // Начальная позиция объекта
+
+    // Добавляем объект и его начальную скорость в соответствующие списки
+    movingItemGroups.append(train);
+    velocities.append(QPointF(2, 2)); // Скорость по осям X и Y
+}
+
+void GraphicsEditor::moveObject()
+{
+    int wallThickness = 10;
+
+    for (int i = 0; i < movingItemGroups.size(); ++i) {
+        QGraphicsItemGroup *itemGroup = movingItemGroups[i];
+        QPointF velocity = velocities[i];
+        QPointF newPos = itemGroup->pos() + velocity;
+
+        // Проверка столкновения с левой и правой стенами
+        QRectF boundingRect = itemGroup->boundingRect();
+        qreal left = newPos.x();
+        qreal right = newPos.x() + boundingRect.width();
+        qreal top = newPos.y();
+        qreal bottom = newPos.y() + boundingRect.height();
+
+                // Проверка столкновения с левой и правой стенами
+                if (left <= wallThickness) {
+                    velocity.setX(-velocity.x());
+                    collisionSound.play();
+                } else if (right >= view->viewport()->width() - 2*wallThickness) {
+                    velocity.setX(-velocity.x());
+                    collisionSound.play();
+                }
+
+                // Проверка столкновения с верхней и нижней стенами
+                if (top <= wallThickness) {
+                    velocity.setY(-velocity.y());
+                    collisionSound.play();
+                } else if (bottom >= view->viewport()->height() - 2*wallThickness) {
+                    velocity.setY(-velocity.y());
+                    collisionSound.play();
+                }
+
+//                bool collisionDetected = false;
+//                QList<QGraphicsItem *> itemsAtNewPos = scene->items(QRectF(newPos, boundingRect.size()));
+//                for (QGraphicsItem *otherItem : itemsAtNewPos) {
+//                    if (otherItem != itemGroup  && otherItem->data(0) != "user") {
+//                        QRectF otherBoundingRect = otherItem->boundingRect().translated(otherItem->pos());
+
+//                        if (right > otherBoundingRect.left() && left < otherBoundingRect.right()) {
+//                            collisionDetected = true;
+//                                            break;
+//                        }
+
+//                        if (bottom > otherBoundingRect.top() && top < otherBoundingRect.bottom()) {
+//                            collisionDetected = true;
+//                                            break;
+//                        }
+//                    }
+//                }
+
+//                if (collisionDetected) {
+
+//                            velocity.setX(-velocity.x()); // Изменяем направление по оси X при столкновении
+//                            velocity.setY(-velocity.y()); // Изменяем направление по оси Y при столкновении
+//                            collisionSound.play();  // Звук столкновения
+//                        }
+                // Обработка столкновений с другими объектами
+                bool collisionDetected = false;
+                QList<QGraphicsItem *> itemsAtNewPos = scene->items(QRectF(newPos, boundingRect.size()));
+
+                for (QGraphicsItem *otherItem : itemsAtNewPos) {
+                    if (otherItem != itemGroup && otherItem->data(0) != "user") {
+                        QRectF otherBoundingRect = otherItem->boundingRect().translated(otherItem->pos());
+                        qreal otherLeft = otherBoundingRect.x();
+                        qreal otherRight = otherBoundingRect.x() + otherBoundingRect.width();
+                        qreal otherTop = otherBoundingRect.y();
+                        qreal otherBottom = otherBoundingRect.y() + otherBoundingRect.height();
+
+                        // Проверка пересечения по оси X
+                        if (right > otherLeft && left < otherRight) {
+                            // Проверка пересечения по оси Y
+                            if (bottom > otherTop && top < otherBottom) {
+                                collisionDetected = true;
+
+                                // Изменение направления скорости (отскок) при столкновении с другим объектом
+                                // Если объект двигается вправо, отражаем скорость по оси X
+                                if (velocity.x() > 0) {
+                                    velocity.setX(-velocity.x());
+                                }
+                                // Если объект двигается влево, отражаем скорость по оси X
+                                else if (velocity.x() < 0) {
+                                    velocity.setX(-velocity.x());
+                                }
+
+                                // Если объект двигается вниз, отражаем скорость по оси Y
+                                if (velocity.y() > 0) {
+                                    velocity.setY(-velocity.y());
+                                }
+
+                                // Если объект двигается вверх, отражаем скорость по оси Y
+                                else if (velocity.y() < 0) {
+                                    velocity.setY(-velocity.y());
+                                }
+
+                                // Воспроизведение звука столкновения
+                                collisionSound.play();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Обновление позиции объекта только после изменения скорости
+                if (collisionDetected) {
+                    itemGroup->setPos(newPos);
+                }
+
+
+
+
+        // Обновляем позицию объекта и скорость
+        itemGroup->setPos(newPos);
+        velocities[i] = velocity;
+    }
+}
+
 void GraphicsEditor::on_SetPen_triggered()
 {
+
     QDialog dialog(this);
     dialog.setWindowTitle(tr("Настройка пера"));
 
@@ -121,23 +309,32 @@ void GraphicsEditor::on_SetPen_triggered()
             });
 
     dialog.exec(); // Показать диалог
+    view->setEraserMode(false);
 }
 
 void GraphicsEditor::on_Clear_triggered()
 {
-        // Получаем список всех объектов на сцене
-        QList<QGraphicsItem *> items = scene->items();
-        // Удаляем все объекты, кроме стен
-        foreach (QGraphicsItem *item, items) {
-            // Проверяем, что это не стена
-            if (item != topWall && item != bottomWall && item != leftWall && item != rightWall) {
-                scene->removeItem(item);  // Убираем из сцены
-                delete item;              // Удаляем объект
-            }
+    // Останавливаем движение всех объектов (если они двигаются)
+    for (int i = 0; i < movingItemGroups.size(); ++i) {
+        // Останавливаем все анимации или действия, связанные с движущимися объектами
+        movingItemGroups[i]->setPos(QPointF(0, 0));  // Пример остановки движения
+    }
+
+    QList<QGraphicsItem *> items = scene->items();
+    // Удаляем все объекты, кроме стен
+    foreach (QGraphicsItem *item, items) {
+        // Проверяем, что это не стена
+        if (item != topWall && item != bottomWall && item != leftWall && item != rightWall) {
+            scene->removeItem(item);  // Убираем из сцены
+            movingItemGroups.removeAll(qgraphicsitem_cast<QGraphicsItemGroup*>(item));
+            delete item;              // Немедленное удаление объекта
         }
-        // Опционально можно перерисовать стены, чтобы они точно остались на месте
-        setupWalls();
-    scene->setBackgroundBrush(Qt::white);  // Reset background color if necessary
+    }
+
+    // Опционально можно перерисовать стены, чтобы они точно остались на месте
+    setupWalls();
+
+    scene->setBackgroundBrush(Qt::white);  // Сброс фона (если нужно)
 }
 
 void GraphicsEditor::resizeEvent(QResizeEvent *event)
@@ -229,6 +426,7 @@ void GraphicsEditor::on_AddFigure_triggered()
     // Функция, которая будет изменять поля в зависимости от выбранной фигуры
     auto updateShapeInputs = [&]() {
         QString shapeType = shapeComboBox->currentData().toString();
+
         if (shapeType == "Square") {
             heightSpinBox->setValue(widthSpinBox->value());  // Устанавливаем высоту равной ширине
             heightSpinBox->setEnabled(false);  // Выключаем поле высоты
@@ -239,15 +437,17 @@ void GraphicsEditor::on_AddFigure_triggered()
             heightSpinBox->setEnabled(true);  // Включаем поле высоты для других фигур
         }
     };
+
     // Обновление полей при изменении типа фигуры
     connect(shapeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), updateShapeInputs);
 
 
     // Изначально вызываем функцию для корректного отображения полей
     updateShapeInputs();
+
     // Выбор цвета заливки
     QPushButton *fillColorButton = new QPushButton(tr("Цвет заливки"));
-    QColor fillColor = Qt::yellow;
+    QColor fillColor = Qt::darkBlue;
     fillColorButton->setStyleSheet(QString("background-color: %1").arg(fillColor.name()));
     connect(fillColorButton, &QPushButton::clicked, [&]() {
         QColor color = QColorDialog::getColor(fillColor, this, tr("Выберите цвет заливки"));
@@ -294,6 +494,7 @@ void GraphicsEditor::on_AddFigure_triggered()
     brushComboBox->addItem("Прямые диагональные линии", "FDiagPattern");
     brushComboBox->addItem("Пересекающиеся диагональные линии", "DiagCrossPattern");
     formLayout->addRow(tr("Тип заливки:"), brushComboBox);
+
     layout->addLayout(formLayout);
 
     // Кнопка ОК
@@ -310,6 +511,7 @@ void GraphicsEditor::on_AddFigure_triggered()
 
         QString brushStyleStr = brushComboBox->currentData().toString();
         Qt::BrushStyle brushStyle = stringToBrushStyle(brushStyleStr);
+
         // Добавляем фигуру
         addShape(shapeType, QRectF(x, y, width, height), fillColor, brushStyle, strokeColor, strokeWidthSpinBox->value());
 
@@ -318,6 +520,7 @@ void GraphicsEditor::on_AddFigure_triggered()
 
     dialog.exec(); // Показать диалог
 }
+
 
 void GraphicsEditor::addShape(QString shapeType, QRectF rect, QColor fillColor, Qt::BrushStyle brushStyle, QColor strokeColor, int strokeWidth)
 {
@@ -362,19 +565,26 @@ void GraphicsEditor::on_DeleteFigure_triggered()
         qDebug() << "No items selected for deletion.";
         return;
     }
+
     // Выводим количество выбранных объектов
     qDebug() << "Selected items count:" << selectedItems.count();
+
     foreach (QGraphicsItem *item, selectedItems) {
         qDebug() << "Item type:" << item->type();
+
         if (QGraphicsItemGroup *group = qgraphicsitem_cast<QGraphicsItemGroup *>(item)) {
             // Если это группа, выводим информацию и удаляем её элементы
             qDebug() << "Removing group with child items.";
+
+            movingItemGroups.removeAll(group);
+
             QList<QGraphicsItem *> children = group->childItems();
             for (QGraphicsItem *child : children) {
                 qDebug() << "Removing child item:" << child;
                 scene->removeItem(child);  // Убираем элемент из сцены
                 delete child;              // Удаляем элемент
             }
+
             scene->removeItem(group);  // Убираем саму группу из сцены
             delete group;              // Удаляем саму группу
         } else {
@@ -384,21 +594,144 @@ void GraphicsEditor::on_DeleteFigure_triggered()
             delete item;              // Удаляем объект
         }
     }
+
     // Обновляем сцену и выводим сообщение
     scene->update();
     qDebug() << "Scene updated after deletion.";
 }
+
+void GraphicsEditor::drawKapustin() {
+    //  Z
+    QGraphicsItemGroup *group_Z = new QGraphicsItemGroup();
+    QGraphicsItem *Z_1 = scene->addLine(QLineF(20, 20, 50, 20), QPen(Qt::blue, 6));
+    group_Z->addToGroup(Z_1);
+    QGraphicsItem *Z_2 = scene->addLine(QLineF(50, 20, 20, 60), QPen(Qt::blue, 6));
+    group_Z->addToGroup(Z_2);
+    QGraphicsItem *Z_3 = scene->addLine(QLineF(20, 60, 50, 60), QPen(Qt::blue, 6));
+    group_Z->addToGroup(Z_3);
+    groupSetFlags(group_Z);
+    scene->addItem(group_Z);
+
+    //  V
+    QGraphicsItemGroup *group_V = new QGraphicsItemGroup();
+    QGraphicsItem *V_1 = scene->addLine(QLineF(50, 20, 65, 60), QPen(Qt::blue, 6));
+    group_V->addToGroup(V_1);
+    QGraphicsItem *V_2 = scene->addLine(QLineF(65, 60, 75, 20), QPen(Qt::blue, 6));
+    group_V->addToGroup(V_2);
+    groupSetFlags(group_V);
+    scene->addItem(group_V);
+
+    //  E
+    QGraphicsItemGroup *group_C = new QGraphicsItemGroup();
+    QGraphicsLineItem *C_1 = scene->addLine(QLineF(90, 15, 120, 15), QPen(Qt::darkBlue, 6));
+    group_C->addToGroup(C_1);
+    QGraphicsLineItem *C_2 = scene->addLine(QLineF(90, 15, 90, 60), QPen(Qt::darkBlue, 6));
+    group_C->addToGroup(C_2);
+    QGraphicsLineItem *C_3 = scene->addLine(QLineF(90, 60, 120, 60), QPen(Qt::darkBlue, 6));
+    group_C->addToGroup(C_3);
+    QGraphicsLineItem *C_4 = scene->addLine(QLineF(90, 40, 120, 40), QPen(Qt::darkBlue, 6));
+    group_C->addToGroup(C_4);
+    groupSetFlags(group_C);
+
+    scene->addItem(group_C);
+
+    // R
+    QGraphicsItemGroup *group_R = new QGraphicsItemGroup();
+    QGraphicsItem *R_1 = scene->addRect(QRectF(140, 20, 30, 10), QPen(Qt::green, 2), QBrush(Qt::black, Qt::SolidPattern));
+    group_R->addToGroup(R_1);
+    QGraphicsItem *R_2 = scene->addLine(QLineF(140, 20, 160, 20), QPen(Qt::green, 2));
+    group_R->addToGroup(R_2);
+    QGraphicsItem *R_4 = scene->addLine(QLineF(140, 20, 140, 60), QPen(Qt::green, 2));
+    group_R->addToGroup(R_4);
+    QGraphicsItem *R_3 = scene->addLine(QLineF(140, 20, 170, 50), QPen(Qt::green, 2));
+    group_R->addToGroup(R_3);
+    groupSetFlags(group_R);
+
+    scene->addItem(group_R);
+
+    //  E
+    QGraphicsItemGroup *group_CQ = new QGraphicsItemGroup();
+    QGraphicsLineItem *CQ_1 = scene->addLine(QLineF(195, 15, 225, 15), QPen(Qt::red, 6));
+    group_CQ->addToGroup(CQ_1);
+    QGraphicsLineItem *CQ_2 = scene->addLine(QLineF(195, 15, 195, 60), QPen(Qt::red, 6));
+    group_CQ->addToGroup(CQ_2);
+    QGraphicsLineItem *CQ_3 = scene->addLine(QLineF(195, 60, 225, 60), QPen(Qt::red, 6));
+    group_CQ->addToGroup(CQ_3);
+    QGraphicsLineItem *CQ_4 = scene->addLine(QLineF(195, 40, 225, 40), QPen(Qt::red, 6));
+    group_CQ->addToGroup(CQ_4);
+    groupSetFlags(group_CQ);
+
+    scene->addItem(group_CQ);
+
+    //  остальные буквы при помощи шрифта
+    QFont font("Arial", 50, QFont::Bold);
+    QGraphicsTextItem *textV1 = new QGraphicsTextItem("В");
+    textV1->setFont(font);
+    textV1->setDefaultTextColor(Qt::green);
+    textV1->setPos(240, 15);
+    textSetFlags(textV1);
+    scene->addItem(textV1);
+
+    QGraphicsTextItem *textM1 = new QGraphicsTextItem("М");
+    textM1->setFont(font);
+    textM1->setDefaultTextColor(Qt::green);
+    textM1->setPos(290, 15);
+    textSetFlags(textM1);
+    scene->addItem(textM1);
+
+    QGraphicsTextItem *textI1 = new QGraphicsTextItem("И");
+    textI1->setFont(font);
+    textI1->setDefaultTextColor(Qt::green);
+    textI1->setPos(340, 15);
+    textSetFlags(textI1);
+    scene->addItem(textI1);
+
+    QGraphicsTextItem *textH1 = new QGraphicsTextItem("Х");
+    textH1->setFont(font);
+    textH1->setDefaultTextColor(Qt::green);
+    textH1->setPos(390, 15);
+    textSetFlags(textH1);
+    scene->addItem(textH1);
+
+    QGraphicsTextItem *textA1 = new QGraphicsTextItem("А");
+    textA1->setFont(font);
+    textA1->setDefaultTextColor(Qt::green);
+    textA1->setPos(440, 15);
+    textSetFlags(textA1);
+    scene->addItem(textA1);
+
+    QGraphicsTextItem *textI2 = new QGraphicsTextItem("И");
+    textI2->setFont(font);
+    textI2->setDefaultTextColor(Qt::green);
+    textI2->setPos(490, 15);
+    textSetFlags(textI2);
+    scene->addItem(textI2);
+
+    QGraphicsTextItem *textL = new QGraphicsTextItem("Л");
+    textL->setFont(font);
+    textL->setDefaultTextColor(Qt::green);
+    textL->setPos(540, 15);
+    textSetFlags(textL);
+    scene->addItem(textL);
+
+    scene->update();  // Обновить всю сцену
+
+
+}
+
 
 void GraphicsEditor::groupSetFlags(QGraphicsItemGroup *group){
     group->setFlag(QGraphicsItem::ItemIsMovable, true);
     group->setFlag(QGraphicsItem::ItemIsSelectable, true);
     group->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
+
 void GraphicsEditor::textSetFlags(QGraphicsTextItem *item){
         item->setFlag(QGraphicsItem::ItemIsMovable, true);
         item->setFlag(QGraphicsItem::ItemIsSelectable, true);
         item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
+
 Qt::BrushStyle GraphicsEditor::stringToBrushStyle(const QString &styleStr) {
     if (styleStr == "SolidPattern") {
         return Qt::SolidPattern;
@@ -436,25 +769,31 @@ Qt::BrushStyle GraphicsEditor::stringToBrushStyle(const QString &styleStr) {
 void GraphicsEditor::on_Eraser_triggered()
 {QDialog dialog(this);
     dialog.setWindowTitle(tr("Размер ластика"));
+
     // Create label, spin box, and OK button for the dialog
     QLabel *label = new QLabel(tr("Выбери размер ластика:"), &dialog);
     QSpinBox *sizeSpinBox = new QSpinBox(&dialog);
     sizeSpinBox->setRange(1, 100);      // Set range for eraser size
     sizeSpinBox->setValue(10);          // Default size
+
     QPushButton *okButton = new QPushButton(tr("OK"), &dialog);
     connect(okButton, &QPushButton::clicked, &dialog, &QDialog::accept);
+
     // Arrange widgets in a vertical layout
     QVBoxLayout *layout = new QVBoxLayout(&dialog);
     layout->addWidget(label);
     layout->addWidget(sizeSpinBox);
     layout->addWidget(okButton);
+
     // Show dialog and get result
     if (dialog.exec() == QDialog::Accepted) {
         int eraserSize = sizeSpinBox->value();
+
         // Set the eraser size as the current pen width and activate eraser mode
         QPen eraserPen;
         eraserPen.setColor(scene->backgroundBrush().color());  // Set eraser color to match the background
         eraserPen.setWidth(eraserSize);
+
         view->setPen(eraserPen);   // Set the pen in view as eraser
         view->setEraserMode(true); // Use the public setter to activate eraser mode
     }}

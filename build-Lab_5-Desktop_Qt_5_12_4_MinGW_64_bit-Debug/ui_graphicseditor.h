@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QToolBar>
@@ -28,8 +27,8 @@ public:
     QAction *Clear;
     QAction *AddFigure;
     QAction *DeleteFigure;
+    QAction *Eraser;
     QWidget *centralwidget;
-    QGraphicsView *graphicsView;
     QMenuBar *menubar;
     QToolBar *toolBar;
     QToolBar *toolBar_2;
@@ -49,11 +48,10 @@ public:
         AddFigure->setObjectName(QString::fromUtf8("AddFigure"));
         DeleteFigure = new QAction(GraphicsEditor);
         DeleteFigure->setObjectName(QString::fromUtf8("DeleteFigure"));
+        Eraser = new QAction(GraphicsEditor);
+        Eraser->setObjectName(QString::fromUtf8("Eraser"));
         centralwidget = new QWidget(GraphicsEditor);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        graphicsView = new QGraphicsView(centralwidget);
-        graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(0, 0, 1091, 671));
         GraphicsEditor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(GraphicsEditor);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -72,6 +70,7 @@ public:
         toolBar->addAction(Clear);
         toolBar->addAction(AddFigure);
         toolBar->addAction(DeleteFigure);
+        toolBar->addAction(Eraser);
 
         retranslateUi(GraphicsEditor);
 
@@ -86,6 +85,7 @@ public:
         Clear->setText(QApplication::translate("GraphicsEditor", "\320\236\321\207\320\270\321\201\321\202\320\272\320\260", nullptr));
         AddFigure->setText(QApplication::translate("GraphicsEditor", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214 \321\204\320\270\320\263\321\203\321\200\321\203", nullptr));
         DeleteFigure->setText(QApplication::translate("GraphicsEditor", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214 \321\204\320\270\320\263\321\203\321\200\321\203", nullptr));
+        Eraser->setText(QApplication::translate("GraphicsEditor", "\320\233\320\260\321\201\321\202\320\270\320\272", nullptr));
         toolBar->setWindowTitle(QApplication::translate("GraphicsEditor", "toolBar", nullptr));
         toolBar_2->setWindowTitle(QApplication::translate("GraphicsEditor", "toolBar_2", nullptr));
     } // retranslateUi
