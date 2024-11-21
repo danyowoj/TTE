@@ -61,8 +61,6 @@ QT_MOC_LITERAL(26, 364, 4), // "item"
 QT_MOC_LITERAL(27, 369, 18), // "stringToBrushStyle"
 QT_MOC_LITERAL(28, 388, 8), // "styleStr"
 QT_MOC_LITERAL(29, 397, 20), // "createMovingObject_1"
-QT_MOC_LITERAL(30, 418, 20), // "createMovingObject_2"
-QT_MOC_LITERAL(31, 439, 20), // "createMovingObject_3"
 QT_MOC_LITERAL(32, 460, 10), // "moveObject"
 QT_MOC_LITERAL(33, 471, 19) // "on_Eraser_triggered"
 
@@ -74,7 +72,7 @@ QT_MOC_LITERAL(33, 471, 19) // "on_Eraser_triggered"
     "addShape\0shapeType\0rect\0fillColor\0"
     "Qt::BrushStyle\0brushStyle\0strokeColor\0"
     "strokeWidth\0on_DeleteFigure_triggered\0"
-    "drawKapustin\0"
+    "drawZverev\0"
     "groupSetFlags\0QGraphicsItemGroup*\0"
     "group\0textSetFlags\0QGraphicsTextItem*\0"
     "item\0stringToBrushStyle\0styleStr\0"
@@ -163,7 +161,7 @@ void GraphicsEditor::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 6: _t->on_AddFigure_triggered(); break;
         case 7: _t->addShape((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QRectF(*)>(_a[2])),(*reinterpret_cast< QColor(*)>(_a[3])),(*reinterpret_cast< Qt::BrushStyle(*)>(_a[4])),(*reinterpret_cast< QColor(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
         case 8: _t->on_DeleteFigure_triggered(); break;
-        case 9: _t->drawKapustin(); break;
+        case 9: _t->drawZverev(); break;
         case 12: _t->groupSetFlags((*reinterpret_cast< QGraphicsItemGroup*(*)>(_a[1]))); break;
         case 13: _t->textSetFlags((*reinterpret_cast< QGraphicsTextItem*(*)>(_a[1]))); break;
         case 14: { Qt::BrushStyle _r = _t->stringToBrushStyle((*reinterpret_cast< const QString(*)>(_a[1])));

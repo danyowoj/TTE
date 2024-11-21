@@ -23,7 +23,7 @@ GraphicsEditor::GraphicsEditor(QWidget *parent) : QMainWindow(parent),
     connect(view, &GraphicsView::resized, this, &GraphicsEditor::setupWalls); // Подключение сигнала resized к setupWalls
     setupWalls();
 
-    drawKapustin();
+    drawZverev();
     createMovingObject_1();
 
 //         Таймер для перемещения объекта
@@ -600,7 +600,7 @@ void GraphicsEditor::on_DeleteFigure_triggered()
     qDebug() << "Scene updated after deletion.";
 }
 
-void GraphicsEditor::drawKapustin() {
+void GraphicsEditor::drawZverev() {
     //  Z
     QGraphicsItemGroup *group_Z = new QGraphicsItemGroup();
     QGraphicsItem *Z_1 = scene->addLine(QLineF(20, 20, 50, 20), QPen(Qt::blue, 6));
