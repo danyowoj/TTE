@@ -21,6 +21,8 @@ GraphicsEditor::GraphicsEditor(QWidget *parent) : QMainWindow(parent),
     connect(view, &GraphicsView::viewportChanged, this, &GraphicsEditor::updateWallPositions);
     connect(view, &GraphicsView::resized, this, &GraphicsEditor::setupWalls); // Подключение сигнала resized к setupWalls
     setupWalls();
+
+    drawPanchina();
 }
 
 GraphicsEditor::~GraphicsEditor()
@@ -125,8 +127,10 @@ void GraphicsEditor::on_SetPen_triggered()
 
 void GraphicsEditor::on_Clear_triggered()
 {
+
         // Получаем список всех объектов на сцене
         QList<QGraphicsItem *> items = scene->items();
+
         // Удаляем все объекты, кроме стен
         foreach (QGraphicsItem *item, items) {
             // Проверяем, что это не стена
@@ -135,10 +139,14 @@ void GraphicsEditor::on_Clear_triggered()
                 delete item;              // Удаляем объект
             }
         }
+
         // Опционально можно перерисовать стены, чтобы они точно остались на месте
         setupWalls();
+
+
     scene->setBackgroundBrush(Qt::white);  // Reset background color if necessary
 }
+
 
 void GraphicsEditor::resizeEvent(QResizeEvent *event)
 {
@@ -229,6 +237,7 @@ void GraphicsEditor::on_AddFigure_triggered()
     // Функция, которая будет изменять поля в зависимости от выбранной фигуры
     auto updateShapeInputs = [&]() {
         QString shapeType = shapeComboBox->currentData().toString();
+
         if (shapeType == "Square") {
             heightSpinBox->setValue(widthSpinBox->value());  // Устанавливаем высоту равной ширине
             heightSpinBox->setEnabled(false);  // Выключаем поле высоты
@@ -239,12 +248,14 @@ void GraphicsEditor::on_AddFigure_triggered()
             heightSpinBox->setEnabled(true);  // Включаем поле высоты для других фигур
         }
     };
+
     // Обновление полей при изменении типа фигуры
     connect(shapeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), updateShapeInputs);
 
 
     // Изначально вызываем функцию для корректного отображения полей
     updateShapeInputs();
+
     // Выбор цвета заливки
     QPushButton *fillColorButton = new QPushButton(tr("Цвет заливки"));
     QColor fillColor = Qt::yellow;
@@ -294,6 +305,7 @@ void GraphicsEditor::on_AddFigure_triggered()
     brushComboBox->addItem("Прямые диагональные линии", "FDiagPattern");
     brushComboBox->addItem("Пересекающиеся диагональные линии", "DiagCrossPattern");
     formLayout->addRow(tr("Тип заливки:"), brushComboBox);
+
     layout->addLayout(formLayout);
 
     // Кнопка ОК
@@ -310,6 +322,7 @@ void GraphicsEditor::on_AddFigure_triggered()
 
         QString brushStyleStr = brushComboBox->currentData().toString();
         Qt::BrushStyle brushStyle = stringToBrushStyle(brushStyleStr);
+
         // Добавляем фигуру
         addShape(shapeType, QRectF(x, y, width, height), fillColor, brushStyle, strokeColor, strokeWidthSpinBox->value());
 
@@ -318,6 +331,7 @@ void GraphicsEditor::on_AddFigure_triggered()
 
     dialog.exec(); // Показать диалог
 }
+
 
 void GraphicsEditor::addShape(QString shapeType, QRectF rect, QColor fillColor, Qt::BrushStyle brushStyle, QColor strokeColor, int strokeWidth)
 {
@@ -362,19 +376,24 @@ void GraphicsEditor::on_DeleteFigure_triggered()
         qDebug() << "No items selected for deletion.";
         return;
     }
+
     // Выводим количество выбранных объектов
     qDebug() << "Selected items count:" << selectedItems.count();
+
     foreach (QGraphicsItem *item, selectedItems) {
         qDebug() << "Item type:" << item->type();
+
         if (QGraphicsItemGroup *group = qgraphicsitem_cast<QGraphicsItemGroup *>(item)) {
             // Если это группа, выводим информацию и удаляем её элементы
             qDebug() << "Removing group with child items.";
+
             QList<QGraphicsItem *> children = group->childItems();
             for (QGraphicsItem *child : children) {
                 qDebug() << "Removing child item:" << child;
                 scene->removeItem(child);  // Убираем элемент из сцены
                 delete child;              // Удаляем элемент
             }
+
             scene->removeItem(group);  // Убираем саму группу из сцены
             delete group;              // Удаляем саму группу
         } else {
@@ -384,21 +403,151 @@ void GraphicsEditor::on_DeleteFigure_triggered()
             delete item;              // Удаляем объект
         }
     }
+
     // Обновляем сцену и выводим сообщение
     scene->update();
     qDebug() << "Scene updated after deletion.";
 }
+
+
+
+
+
+void GraphicsEditor::drawPanchina() {
+        // П
+    QGraphicsItemGroup *group_P = new QGraphicsItemGroup();
+    QGraphicsItem *P_1 = scene->addLine(QLineF(15,15,15,50), QPen(Qt::blue, 6));
+    group_P->addToGroup(P_1);
+    QGraphicsItem *P_2 = scene->addRect(QRectF(15,15,30,10), QPen(Qt::blue, 2), QBrush(Qt::yellow, Qt::SolidPattern));
+    group_P->addToGroup(P_2);
+    QGraphicsItem *P_3 = scene->addLine(QLineF(45, 15, 45, 50), QPen(Qt::blue, 6));
+    group_P->addToGroup(P_3);
+    groupSetFlags(group_P);
+
+    scene->addItem(group_P);
+        //  A
+        QGraphicsItemGroup *group_A = new QGraphicsItemGroup();
+        QGraphicsItem *A_1 = scene->addLine(QLineF(70, 60, 85, 15), QPen(Qt::red, 6));
+        group_A->addToGroup(A_1);
+        QGraphicsItem *A_2 = scene->addLine(QLineF(85, 15, 100, 60), QPen(Qt::red, 6));
+        group_A->addToGroup(A_2);
+        QGraphicsItem *A_3 = scene->addLine(QLineF(75, 50, 95, 50), QPen(Qt::red, 6));
+        group_A->addToGroup(A_3);
+        groupSetFlags(group_A);
+
+        scene->addItem(group_A);
+
+        //  Н
+        QGraphicsItemGroup *group_N = new QGraphicsItemGroup();
+        QGraphicsItem *N_1 = scene->addLine(QLineF(110, 60, 110, 15), QPen(Qt::blue, 6));
+        group_N->addToGroup(N_1);
+        QGraphicsItem *N_2 = scene->addRect(QRectF(110,30,30,10), QPen(Qt::blue, 2), QBrush(Qt::yellow, Qt::SolidPattern));
+        group_N->addToGroup(N_2);
+        QGraphicsItem *N_3 = scene->addLine(QLineF(140, 15, 140, 60), QPen(Qt::blue, 6));
+        group_N->addToGroup(N_3);
+        groupSetFlags(group_N);
+
+        scene->addItem(group_N);
+
+        //  Ч
+        QGraphicsItemGroup *group_C = new QGraphicsItemGroup();
+
+        // Рисуем первую вертикальную линию
+        QGraphicsItem *C_1 = scene->addLine(QLineF(150, 15, 150, 40), QPen(Qt::red, 6));
+        group_C->addToGroup(C_1);
+
+        // Рисуем вторую вертикальную линию
+        QGraphicsItem *C_2 = scene->addLine(QLineF(170, 15, 170, 60), QPen(Qt::red, 6));
+        group_C->addToGroup(C_2);
+
+        // Рисуем диагональную линию, соединяющую верхние концы вертикальных линий
+        QGraphicsItem *C_3 = scene->addLine(QLineF(150, 40, 165, 40), QPen(Qt::red, 6));
+        group_C->addToGroup(C_3);
+
+        // Устанавливаем флаги для группы
+        groupSetFlags(group_C);
+
+        // Добавляем группу на сцену
+        scene->addItem(group_C);
+
+
+        //  И
+        QGraphicsItemGroup *group_I = new QGraphicsItemGroup();
+        QGraphicsLineItem *I_1 = scene->addLine(QLineF(180, 15, 180, 70), QPen(Qt::yellow, 6));
+        group_I->addToGroup(I_1);
+        QGraphicsLineItem *I_2 = scene->addLine(QLineF(180, 70, 210, 15), QPen(Qt::yellow, 6));
+        group_I->addToGroup(I_2);
+        QGraphicsLineItem *I_3 = scene->addLine(QLineF(210, 15, 210, 70), QPen(Qt::yellow, 6));
+        group_I->addToGroup(I_3);;
+        groupSetFlags(group_I);
+
+        scene->addItem(group_I);
+
+        //  остальные буквы при помощи шрифта
+        QFont font("Arial", 50, QFont::Bold);
+        QGraphicsTextItem *textN1 = new QGraphicsTextItem("Н");
+        textN1->setFont(font);
+        textN1->setDefaultTextColor(Qt::green);
+        textN1->setPos(220, 15);
+        textSetFlags(textN1);
+        scene->addItem(textN1);
+
+        QGraphicsTextItem *textA1 = new QGraphicsTextItem("А");
+        textA1->setFont(font);
+        textA1->setDefaultTextColor(Qt::green);
+        textA1->setPos(270, 15);
+        textSetFlags(textA1);
+        scene->addItem(textA1);
+
+        QGraphicsTextItem *textL = new QGraphicsTextItem("Л");
+        textL->setFont(font);
+        textL->setDefaultTextColor(Qt::green);
+        textL->setPos(320, 15);
+        textSetFlags(textL);
+        scene->addItem(textL);
+
+        QGraphicsTextItem *textE = new QGraphicsTextItem("Е");
+        textE->setFont(font);
+        textE->setDefaultTextColor(Qt::green);
+        textE->setPos(370, 15);
+        textSetFlags(textE);
+        scene->addItem(textE);
+    
+
+        QGraphicsTextItem *textR = new QGraphicsTextItem("Р");
+        textR->setFont(font);
+        textR->setDefaultTextColor(Qt::green);
+        textR->setPos(420, 15);
+        textSetFlags(textR);
+        scene->addItem(textR);
+
+        QGraphicsTextItem *textA2 = new QGraphicsTextItem("А");
+        textA2->setFont(font);
+        textA2->setDefaultTextColor(Qt::green);
+        textA2->setPos(470, 15);
+        textSetFlags(textA2);
+        scene->addItem(textA2);
+
+
+
+    scene->update();  // Обновить всю сцену
+
+
+}
+
 
 void GraphicsEditor::groupSetFlags(QGraphicsItemGroup *group){
     group->setFlag(QGraphicsItem::ItemIsMovable, true);
     group->setFlag(QGraphicsItem::ItemIsSelectable, true);
     group->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
+
 void GraphicsEditor::textSetFlags(QGraphicsTextItem *item){
         item->setFlag(QGraphicsItem::ItemIsMovable, true);
         item->setFlag(QGraphicsItem::ItemIsSelectable, true);
         item->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
+
 Qt::BrushStyle GraphicsEditor::stringToBrushStyle(const QString &styleStr) {
     if (styleStr == "SolidPattern") {
         return Qt::SolidPattern;
@@ -432,29 +581,3 @@ Qt::BrushStyle GraphicsEditor::stringToBrushStyle(const QString &styleStr) {
         return Qt::NoBrush;  // Default if no match
     }
 }
-
-void GraphicsEditor::on_Eraser_triggered()
-{QDialog dialog(this);
-    dialog.setWindowTitle(tr("Размер ластика"));
-    // Create label, spin box, and OK button for the dialog
-    QLabel *label = new QLabel(tr("Выбери размер ластика:"), &dialog);
-    QSpinBox *sizeSpinBox = new QSpinBox(&dialog);
-    sizeSpinBox->setRange(1, 100);      // Set range for eraser size
-    sizeSpinBox->setValue(10);          // Default size
-    QPushButton *okButton = new QPushButton(tr("OK"), &dialog);
-    connect(okButton, &QPushButton::clicked, &dialog, &QDialog::accept);
-    // Arrange widgets in a vertical layout
-    QVBoxLayout *layout = new QVBoxLayout(&dialog);
-    layout->addWidget(label);
-    layout->addWidget(sizeSpinBox);
-    layout->addWidget(okButton);
-    // Show dialog and get result
-    if (dialog.exec() == QDialog::Accepted) {
-        int eraserSize = sizeSpinBox->value();
-        // Set the eraser size as the current pen width and activate eraser mode
-        QPen eraserPen;
-        eraserPen.setColor(scene->backgroundBrush().color());  // Set eraser color to match the background
-        eraserPen.setWidth(eraserSize);
-        view->setPen(eraserPen);   // Set the pen in view as eraser
-        view->setEraserMode(true); // Use the public setter to activate eraser mode
-    }}

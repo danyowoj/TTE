@@ -19,7 +19,6 @@ public:
     explicit GraphicsView(QGraphicsScene *scene, QWidget *parent = nullptr);
     ~GraphicsView() override;
     void setPen(const QPen &pen);
-    void setEraserMode(bool mode);
 
 signals:
     void resized();
@@ -44,7 +43,6 @@ private:
     bool isMovingShape;
     QPen currentPen;
     QPoint lastMousePos;
-    bool isEraserMode = false;
 };
 
 #endif // GRAPHICSVIEW_H
