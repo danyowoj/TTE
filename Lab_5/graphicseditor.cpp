@@ -24,7 +24,11 @@ GraphicsEditor::GraphicsEditor(QWidget *parent) : QMainWindow(parent),
     setupWalls();
 
     drawZverev();
+    drawLatsuk();
+    drawValeria();
+    createMovingObject_2();
     createMovingObject_1();
+    createMovingObject();
 
 //         Таймер для перемещения объекта
         QTimer *timer = new QTimer(this);
@@ -72,6 +76,30 @@ void GraphicsEditor::on_BackColor_triggered()
     }
 }
 
+void GraphicsEditor::createMovingObject()
+{
+    // Создание нескольких фигур для составного объекта
+    QGraphicsRectItem *trunk = new QGraphicsRectItem(17, 30, 15, 75);
+    trunk->setBrush(Qt::darkRed);
+    QGraphicsEllipseItem *crown = new QGraphicsEllipseItem(0, 0, 50, 75);
+    crown->setBrush(Qt::darkGreen);
+
+    // Группируем фигуры в один объект
+    QGraphicsItemGroup *tree = new QGraphicsItemGroup();
+    tree->addToGroup(trunk);
+    tree->addToGroup(crown);
+
+    // Добавляем объект на сцену
+    tree->setFlag(QGraphicsItem::ItemIsSelectable, true);
+    scene->addItem(tree);
+
+    tree->setPos(600, 300);  // Начальная позиция объекта
+
+    // Добавляем объект и его начальную скорость в соответствующие списки
+    movingItemGroups.append(tree);
+    velocities.append(QPointF(2, 2)); // Скорость по осям X и Y
+}
+
 void GraphicsEditor::createMovingObject_1()
 {
     // Создание нескольких фигур для составного объекта
@@ -113,6 +141,65 @@ void GraphicsEditor::createMovingObject_1()
     movingItemGroups.append(train);
     velocities.append(QPointF(2, 2)); // Скорость по осям X и Y
 }
+
+void GraphicsEditor::createMovingObject_2()
+{
+    // Создание тела птицы (овальный корпус)
+    QGraphicsEllipseItem *body = new QGraphicsEllipseItem(10, 10, 50, 30);
+    body->setBrush(Qt::yellow); // Жёлтый цвет для тела птицы
+    body->setPen(QPen(Qt::black));
+
+    // Создание головы птицы (меньший овал)
+    QGraphicsEllipseItem *head = new QGraphicsEllipseItem(35, 0, 20, 20);
+    head->setBrush(Qt::yellow); // Жёлтый цвет для головы птицы
+    head->setPen(QPen(Qt::black));
+
+    // Создание клюва
+    QGraphicsPolygonItem *beak = new QGraphicsPolygonItem();
+    QPolygonF beakPolygon;
+    beakPolygon << QPointF(50, 10) << QPointF(55, 5) << QPointF(55, 15);
+    beak->setPolygon(beakPolygon);
+    beak->setBrush(Qt::green); // Оранжевый цвет для клюва
+
+    // Создание крыльев (2 оваля)
+    QGraphicsEllipseItem *wingLeft = new QGraphicsEllipseItem(0, 10, 30, 15);
+    wingLeft->setBrush(Qt::darkGray); // Темно-серый цвет для левого крыла
+    wingLeft->setPen(QPen(Qt::black));
+
+    QGraphicsEllipseItem *wingRight = new QGraphicsEllipseItem(20, 10, 30, 15);
+    wingRight->setBrush(Qt::darkGray); // Темно-серый цвет для правого крыла
+    wingRight->setPen(QPen(Qt::black));
+
+    // Создание хвоста (треугольник)
+    QGraphicsPolygonItem *tail = new QGraphicsPolygonItem();
+    QPolygonF tailPolygon;
+    tailPolygon << QPointF(10, 35) << QPointF(20, 45) << QPointF(0, 45);
+    tail->setPolygon(tailPolygon);
+    tail->setBrush(Qt::darkGray); // Темно-серый цвет для хвоста
+
+    // Группируем части птицы в один объект
+    QGraphicsItemGroup *bird = new QGraphicsItemGroup();
+    bird->addToGroup(body);
+    bird->addToGroup(head);
+    bird->addToGroup(beak);
+    bird->addToGroup(wingLeft);
+    bird->addToGroup(wingRight);
+    bird->addToGroup(tail);
+
+    // Устанавливаем флаг для выбора объекта
+    bird->setFlag(QGraphicsItem::ItemIsSelectable, true);
+
+    // Добавляем объект на сцену
+    scene->addItem(bird);
+
+    // Устанавливаем начальную позицию птицы
+    bird->setPos(700, 500); // Центр экрана
+
+    // Добавляем объект и его начальную скорость в соответствующие списки
+    movingItemGroups.append(bird);
+    velocities.append(QPointF(2, -2)); // Скорость по осям X и Y
+}
+
 
 void GraphicsEditor::moveObject()
 {
@@ -719,6 +806,237 @@ void GraphicsEditor::drawZverev() {
 
 }
 
+void GraphicsEditor::drawLatsuk() {
+    //  Л
+    QGraphicsItemGroup *group_L = new QGraphicsItemGroup();
+    QGraphicsItem *L_1 = scene->addRect(QRectF(15,15,50,10), QPen(Qt::green, 2), QBrush(Qt::black, Qt::SolidPattern));
+    L_1->setRotation(75);
+    L_1->setPos(60, 100);
+    group_L->addToGroup(L_1);
+    QGraphicsItem *L_2 = scene->addRect(QRectF(15,15,50,10), QPen(Qt::green, 2), QBrush(Qt::black, Qt::SolidPattern));
+    L_2->setRotation(-75);
+    L_2->setPos(5, 180);
+    group_L->addToGroup(L_2);
+    groupSetFlags(group_L);
+    scene->addItem(group_L);
+
+    //  A
+    QGraphicsItemGroup *group_A = new QGraphicsItemGroup();
+    QGraphicsItem *A_1 = scene->addLine(QLineF(70, 160, 85, 115), QPen(Qt::red, 6));
+    group_A->addToGroup(A_1);
+    QGraphicsItem *A_2 = scene->addLine(QLineF(85, 115, 100, 160), QPen(Qt::red, 6));
+    group_A->addToGroup(A_2);
+    QGraphicsItem *A_3 = scene->addLine(QLineF(75, 150, 95, 150), QPen(Qt::red, 6));
+    group_A->addToGroup(A_3);
+    groupSetFlags(group_A);
+
+    scene->addItem(group_A);
+
+    //  Ц
+    QGraphicsItemGroup *group_C = new QGraphicsItemGroup();
+    QGraphicsItem *C_1 = scene->addLine(QLineF(110, 160, 110, 115), QPen(Qt::blue, 6));
+    group_C->addToGroup(C_1);
+    QGraphicsItem *C_2 = scene->addRect(QRectF(110,155,30,10), QPen(Qt::blue, 2), QBrush(Qt::yellow, Qt::SolidPattern));
+    group_C->addToGroup(C_2);
+    QGraphicsItem *C_3 = scene->addLine(QLineF(140, 115, 140, 160), QPen(Qt::blue, 6));
+    group_C->addToGroup(C_3);
+    QGraphicsItem *C_4 = scene->addRect(QRectF(155,-145,20,8), QPen(Qt::blue, 2), QBrush(Qt::yellow, Qt::SolidPattern));
+    C_4->setRotation(90);
+    group_C->addToGroup(C_4);
+    groupSetFlags(group_C);
+
+    scene->addItem(group_C);
+
+    //  У
+    QGraphicsItemGroup *group_U = new QGraphicsItemGroup();
+    QGraphicsItem *U_1 = scene->addLine(QLineF(150, 115, 160, 130), QPen(Qt::red, 6));
+    group_U->addToGroup(U_1);
+    QGraphicsItem *U_2 = scene->addLine(QLineF(150, 160, 170, 115), QPen(Qt::red, 6));
+    group_U->addToGroup(U_2);
+    groupSetFlags(group_U);
+
+    scene->addItem(group_U);
+
+    //  K
+    QGraphicsItemGroup *group_K = new QGraphicsItemGroup();
+    QGraphicsItem *K_1 = scene->addRect(QRectF(185,115,10,50), QPen(Qt::green, 2), QBrush(Qt::black, Qt::SolidPattern));
+    group_K->addToGroup(K_1);
+    QGraphicsItem *K_2 = scene->addRect(QRectF(135,135,30,10), QPen(Qt::green, 2), QBrush(Qt::black, Qt::SolidPattern));
+    K_2->setTransformOriginPoint(15, 15);
+    K_2->setRotation(-45);
+    K_2->setPos(5, 120);
+    group_K->addToGroup(K_2);
+    QGraphicsItem *K_3 = scene->addRect(QRectF(135,-115,30,10), QPen(Qt::green, 2), QBrush(Qt::black, Qt::SolidPattern));
+    K_3->setRotation(45);
+    K_3->setPos(15, 120);
+    group_K->addToGroup(K_3);
+    groupSetFlags(group_K);
+
+    scene->addItem(group_K);
+
+    //  остальные буквы при помощи шрифта
+    QFont font("Arial", 50, QFont::Bold);
+    QGraphicsTextItem *textA = new QGraphicsTextItem("А");
+    textA->setFont(font);
+    textA->setDefaultTextColor(Qt::green);
+    textA->setPos(220, 115);
+    textSetFlags(textA);
+    scene->addItem(textA);
+
+    QGraphicsTextItem *textN = new QGraphicsTextItem("Н");
+    textN->setFont(font);
+    textN->setDefaultTextColor(Qt::green);
+    textN->setPos(270, 115);
+    textSetFlags(textN);
+    scene->addItem(textN);
+
+    QGraphicsTextItem *textD = new QGraphicsTextItem("Д");
+    textD->setFont(font);
+    textD->setDefaultTextColor(Qt::green);
+    textD->setPos(320, 115);
+    textSetFlags(textD);
+    scene->addItem(textD);
+
+    QGraphicsTextItem *textR = new QGraphicsTextItem("Р");
+    textR->setFont(font);
+    textR->setDefaultTextColor(Qt::green);
+    textR->setPos(370, 115);
+    textSetFlags(textR);
+    scene->addItem(textR);
+
+    QGraphicsTextItem *textE = new QGraphicsTextItem("Е");
+    textE->setFont(font);
+    textE->setDefaultTextColor(Qt::green);
+    textE->setPos(420, 115);
+    textSetFlags(textE);
+    scene->addItem(textE);
+
+    QGraphicsTextItem *textY = new QGraphicsTextItem("Й");
+    textY->setFont(font);
+    textY->setDefaultTextColor(Qt::green);
+    textY->setPos(470, 115);
+    textSetFlags(textY);
+    scene->addItem(textY);
+
+    scene->update();  // Обновить всю сцену
+}
+
+void GraphicsEditor::drawValeria() {
+    // П
+    QGraphicsItemGroup *group_P = new QGraphicsItemGroup();
+    QGraphicsItem *P_1 = scene->addLine(QLineF(15,215,15,250), QPen(Qt::magenta, 6));
+    group_P->addToGroup(P_1);
+    QGraphicsItem *P_2 = scene->addRect(QRectF(15,215,30,10), QPen(Qt::magenta, 2), QBrush(Qt::darkMagenta, Qt::SolidPattern));
+    group_P->addToGroup(P_2);
+    QGraphicsItem *P_3 = scene->addLine(QLineF(45, 215, 45, 250), QPen(Qt::magenta, 6));
+    group_P->addToGroup(P_3);
+    groupSetFlags(group_P);
+
+    scene->addItem(group_P);
+
+    // A
+    QGraphicsItemGroup *group_A = new QGraphicsItemGroup();
+    QGraphicsItem *A_1 = scene->addLine(QLineF(70, 260, 85, 215), QPen(Qt::darkMagenta, 6));
+    group_A->addToGroup(A_1);
+    QGraphicsItem *A_2 = scene->addLine(QLineF(85, 215, 100, 260), QPen(Qt::darkMagenta, 6));
+    group_A->addToGroup(A_2);
+    QGraphicsItem *A_3 = scene->addLine(QLineF(75, 250, 95, 250), QPen(Qt::darkMagenta, 6));
+    group_A->addToGroup(A_3);
+    groupSetFlags(group_A);
+
+    scene->addItem(group_A);
+
+    // Н
+    QGraphicsItemGroup *group_N = new QGraphicsItemGroup();
+    QGraphicsItem *N_1 = scene->addLine(QLineF(110, 260, 110, 215), QPen(Qt::magenta, 6));
+    group_N->addToGroup(N_1);
+    QGraphicsItem *N_2 = scene->addRect(QRectF(110,230,30,10), QPen(Qt::magenta, 2), QBrush(Qt::darkMagenta, Qt::SolidPattern));
+    group_N->addToGroup(N_2);
+    QGraphicsItem *N_3 = scene->addLine(QLineF(140, 215, 140, 260), QPen(Qt::magenta, 6));
+    group_N->addToGroup(N_3);
+    groupSetFlags(group_N);
+
+    scene->addItem(group_N);
+
+    // Ч
+    QGraphicsItemGroup *group_C = new QGraphicsItemGroup();
+
+    // Рисуем первую вертикальную линию
+    QGraphicsItem *C_1 = scene->addLine(QLineF(150, 215, 150, 240), QPen(Qt::red, 6));
+    group_C->addToGroup(C_1);
+
+    // Рисуем вторую вертикальную линию
+    QGraphicsItem *C_2 = scene->addLine(QLineF(170, 215, 170, 260), QPen(Qt::red, 6));
+    group_C->addToGroup(C_2);
+
+    // Рисуем диагональную линию, соединяющую верхние концы вертикальных линий
+    QGraphicsItem *C_3 = scene->addLine(QLineF(150, 240, 165, 240), QPen(Qt::red, 6));
+    group_C->addToGroup(C_3);
+
+    // Устанавливаем флаги для группы
+    groupSetFlags(group_C);
+
+    // Добавляем группу на сцену
+    scene->addItem(group_C);
+
+    // И
+    QGraphicsItemGroup *group_I = new QGraphicsItemGroup();
+    QGraphicsLineItem *I_1 = scene->addLine(QLineF(180, 215, 180, 270), QPen(Qt::darkMagenta, 6));
+    group_I->addToGroup(I_1);
+    QGraphicsLineItem *I_2 = scene->addLine(QLineF(180, 270, 210, 215), QPen(Qt::darkMagenta, 6));
+    group_I->addToGroup(I_2);
+    QGraphicsLineItem *I_3 = scene->addLine(QLineF(210, 215, 210, 270), QPen(Qt::darkMagenta, 6));
+    group_I->addToGroup(I_3);
+    groupSetFlags(group_I);
+
+    scene->addItem(group_I);
+
+    // Остальные буквы при помощи шрифта
+    QFont font("Arial", 50, QFont::Bold);
+    QGraphicsTextItem *textN1 = new QGraphicsTextItem("Н");
+    textN1->setFont(font);
+    textN1->setDefaultTextColor(Qt::magenta);
+    textN1->setPos(220, 215); // Сдвигаем вниз на 200 пикселей
+    textSetFlags(textN1);
+    scene->addItem(textN1);
+
+    QGraphicsTextItem *textA1 = new QGraphicsTextItem("А");
+    textA1->setFont(font);
+    textA1->setDefaultTextColor(Qt::green);
+    textA1->setPos(270, 215); // Сдвигаем вниз на 200 пикселей
+    textSetFlags(textA1);
+    scene->addItem(textA1);
+
+    QGraphicsTextItem *textL = new QGraphicsTextItem("Л");
+    textL->setFont(font);
+    textL->setDefaultTextColor(Qt::magenta);
+    textL->setPos(320, 215); // Сдвигаем вниз на 200 пикселей
+    textSetFlags(textL);
+    scene->addItem(textL);
+
+    QGraphicsTextItem *textE = new QGraphicsTextItem("Е");
+    textE->setFont(font);
+    textE->setDefaultTextColor(Qt::green);
+    textE->setPos(370, 215); // Сдвигаем вниз на 200 пикселей
+    textSetFlags(textE);
+    scene->addItem(textE);
+
+    QGraphicsTextItem *textR = new QGraphicsTextItem("Р");
+    textR->setFont(font);
+    textR->setDefaultTextColor(Qt::magenta);
+    textR->setPos(420, 215); // Сдвигаем вниз на 200 пикселей
+    textSetFlags(textR);
+    scene->addItem(textR);
+
+    QGraphicsTextItem *textA2 = new QGraphicsTextItem("А");
+    textA2->setFont(font);
+    textA2->setDefaultTextColor(Qt::green);
+    textA2->setPos(470, 215); // Сдвигаем вниз на 200 пикселей
+    textSetFlags(textA2);
+    scene->addItem(textA2);
+
+    scene->update();  // Обновить всю сцену
+}
 
 void GraphicsEditor::groupSetFlags(QGraphicsItemGroup *group){
     group->setFlag(QGraphicsItem::ItemIsMovable, true);

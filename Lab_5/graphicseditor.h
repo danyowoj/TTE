@@ -56,10 +56,14 @@ private slots:
     void addShape(QString shapeType, QRectF rect, QColor fillColor, Qt::BrushStyle brushStyle, QColor strokeColor, int strokeWidth);
     void on_DeleteFigure_triggered();
     void drawZverev();
+    void drawLatsuk();
+    void drawValeria();
     void groupSetFlags(QGraphicsItemGroup *group);
     void textSetFlags(QGraphicsTextItem *item);
     Qt::BrushStyle stringToBrushStyle(const QString &styleStr);
+    void createMovingObject_2();
     void createMovingObject_1();
+    void createMovingObject();
     void moveObject();
     void on_Eraser_triggered();
 
